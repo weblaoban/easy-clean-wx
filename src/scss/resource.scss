@@ -1,0 +1,51 @@
+$color: #4685f4;
+
+body, ul, p, h1,h2,h3,h4,h5,h6{
+  margin:0;
+  padding:0;
+  color: #333;
+}
+*{
+  list-style: none;
+  text-decoration: none;
+  font-size: 28px;
+  box-sizing: border-box;
+}
+.container{
+  width: 100%;
+  padding: 35px;
+  margin: 0 auto;
+}
+
+@mixin bg_img($img){
+  background: url('#{$img}') no-repeat;
+  background-size: 100%;
+}
+@mixin box($param){
+  width: map-get($param,w);
+  height: map-get($param,h);
+  font-size: map-get($param,fs);
+  line-height: map-get($param,lh);
+  font-weight: map-get($param,fw);
+  background: map-get($param,bg);
+  color: map-get($param,c);
+  border-radius: map-get($param,bdr);
+  text-align: map-get($param,ta);
+  opacity: map-get($param,o);
+  float: map-get($param,fl);
+  text-shadow: map-get($param,ts);
+  box-shadow: map-get($param,bs);
+  display: map-get($param,d);
+  flex: map-get($param,fx);
+  margin: map-get($param,m);
+  padding: map-get($param,p);
+  border: map-get($param,br);
+}
+@mixin position($param){
+  position: map-get($param,p);
+  top: map-get($param,t);
+  left: map-get($param,l);
+  right: map-get($param,r);
+  bottom: map-get($param,b);
+  z-index: map-get($param,z);
+}

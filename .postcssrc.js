@@ -1,5 +1,11 @@
 module.exports = {
   plugins: {
-    autoprefixer: {}
+    autoprefixer: {
+      browsers: ['Android >= 4.0','IOS >= 7']
+    },
+    'postcss-pxtorem': {
+      rootValue: 100,
+      propList: '*'
+    }
   }
 }
