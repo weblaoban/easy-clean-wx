@@ -89,6 +89,14 @@
         .el-button{
             margin-top: 40px;
             width: 100%;
+            padding: 12px 20px;
+            a{
+                display: block;
+                width: 100%;
+                height:100%;
+                color: #fff;
+                font-size: 30px;
+            }
         }
     }
 </style>

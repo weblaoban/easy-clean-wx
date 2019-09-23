@@ -22,6 +22,14 @@ export default new Router({
         title: '用户注册'
       }
     },
+      {
+        path:'/myTask',
+          name: 'myTask',
+          component: ()=>import('./views/MyTask.vue'),
+          meta: {
+              title: '我的任务'
+          }
+      },
     {
       path: '/forgetPassword',
       name: 'forgetPassword',

@@ -10,7 +10,7 @@
                 </router-link>
             </li>
             <li>
-                <router-link to="/">
+                <router-link to="/myTask">
                     <div class="img">
                         <img src="../assets/images/shopping-cart-16.svg" alt="">
                     </div>

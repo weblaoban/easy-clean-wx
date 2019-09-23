@@ -34,22 +34,75 @@
                 </el-form-item>
                 <el-form-item label="常购类目:" prop="buyCategory">
                     <el-checkbox-group v-model="buyerRequire.buyCategory">
-                        <el-checkbox v-for="item in buyTypes" :label="item.id" :text="item.desc" :key="item.id">无限制</el-checkbox>
+                        <el-checkbox v-for="item in buyTypes" :label="item.id" :text="item.desc" :key="item.id">{{item.desc}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="地区:" prop="address" class="address">
-                    <div class="key-item" :key="index" v-for="(item,index) in buyerRequire.address">
-                        <el-form-item labelWidth="0" :prop="'address.'+index+'.province'">
-                            <el-select @change="function(e){provinceChange(e,index)}" v-model="item.province" placeholder="请输入（省）">
-                                <el-option v-for="province in item.provinces" :key="province" :label="province" :value="province"></el-option>
+                    <div class="key-item">
+                        <el-form-item labelWidth="0" prop="province">
+                            <el-select @change="provinceChange" v-model="buyerRequire.province" placeholder="请输入（省）">
+                                <el-option v-for="province in provinces" :key="province" :label="province" :value="province"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item v-if="item.cities.length" labelWidth="0" :prop="'address.'+index+'.city'">
-                            <el-select  v-model="item.city" placeholder="请输入（市）">
-                                <el-option v-for="city in item.cities" :key="city" :label="city" :value="city"></el-option>
+                        <el-form-item v-if="cities.length" labelWidth="0" prop="city">
+                            <el-select  v-model="buyerRequire.city" placeholder="请输入（市）">
+                                <el-option v-for="city in cities" :key="city" :label="city" :value="city"></el-option>
                             </el-select>
                         </el-form-item>
                     </div>
+                </el-form-item>
+                <el-form-item label="收货地址:" prop="address" class="address">
+                    <el-input type="textarea" placeholder="请输入详细地址" v-model="buyerRequire.address" ></el-input>
+                </el-form-item>
+                <el-divider />
+                <h3>上传该账号的淘宝截图</h3>
+                <h4><span>1、手机淘宝-我的淘宝-顶部</span><a>截图示例</a></h4>
+                <el-form-item prop="top" labelWidth="0">
+                    <el-upload
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="function(e,file){handleAvatarSuccess(e,file,'top')}">
+                        <img v-if="buyerRequire.top" :src="buyerRequire.top" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <h4><span>2、手机淘宝-我的淘宝-底部</span><a>截图示例</a></h4>
+                <el-form-item prop="bottom" labelWidth="0">
+                    <el-upload
+                            accept="image/jpg"
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="function(e,file){handleAvatarSuccess(e,file,'bottom')}">
+                        <img v-if="buyerRequire.bottom" :src="buyerRequire.bottom" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <h4><span>3、手机淘宝-收货地址</span><a>截图示例</a></h4>
+                <el-form-item prop="addressImg" labelWidth="0">
+                    <el-upload
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="function(e,file){handleAvatarSuccess(e,file,'addressImg')}">
+                        <img v-if="buyerRequire.addressImg" :src="buyerRequire.addressImg" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <h4><span>3、支付宝-我的</span><a>截图示例</a></h4>
+                <el-form-item prop="top" labelWidth="0">
+                    <el-upload
+                            class="avatar-uploader"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :show-file-list="false"
+                            :on-success="function(e,file){handleAvatarSuccess(e,file,'aliPay')}">
+                        <img v-if="buyerRequire.aliPay" :src="buyerRequire.aliPay" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="submitForm('buyerRequire')">提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -68,29 +121,97 @@
         ages,
         credit,
         sex,
+          provinces: Object.keys(provinces),
+          cities: [],
         buyerRequire: {
-          taskType: 1,
+          taskType: '',
           account: '',
-          buyerCredit: 3,
-          naughty:'',
-
-          verify: 0,
-          taskLimit: 10,
-          naughtyValue: 0,
-          buyerSex: 0,
-          buyerAge: [0],
+          buyerCredit: '',
           buyCategory: [],
-          address: [
-            {
-              provinces: Object.keys(provinces),
-              cities: [],
-              province:'',
-              city:''
-            }
-          ],
+          naughty:'',
+          buyerSex: '',
+          ages: '',
+            province:'',
+            city:'',
+            address:'',
+            top: '',
+            bottom: '',
+            addressImg: '',
+            aliPay: '',
         },
-        rules: {},
-        formData: new FormData()
+        rules: {
+            taskType: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            account:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            buyerCredit:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            buyCategory:[
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            naughty: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            buyerSex:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            ages:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            province: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            city: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            address: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            top:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            bottom:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            addressImg:  [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+            aliPay: [
+                {
+                    required: true, message:'不能为空',trigger:'blur'
+                }
+            ],
+        },
+        formData: new FormData(),
       }
     },
     methods: {
@@ -101,29 +222,14 @@
           }
         })
       },
-      provinceChange(province, index){
+      provinceChange(province){
         const cities = provinces[province]?provinces[province]:[]
-        const target = this.buyerRequire.address[index];
-        target.cities = cities;
+        this.cities = cities;
       },
-      addKeys(){
-        const searchKeys = this.buyerRequire.address;
-        searchKeys.push({
-          provinces: Object.keys(provinces),
-          cities: [],
-          province:'',
-          city:''
-        })
-        this.buyerRequire.address = searchKeys;
-      },
-      removeKeys(){
-        const searchKeys = this.buyerRequire.address;
-        if(searchKeys.length<2){
-          return;
-        }
-        searchKeys.pop();
-        this.buyerRequire.address = searchKeys;
-      }
+        handleAvatarSuccess(res, file, type) {
+          console.log(type)
+//            this.ruleForm.positive = URL.createObjectURL(file.raw);
+        },
     }
   }
 </script>
@@ -131,6 +237,7 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
     .buyerRequire {
+        padding-bottom: 1rem;
         .container {
             width: 100%;
         }
@@ -204,6 +311,42 @@
                     width: 220px;
                     margin-right: 10px;
                 }
+            }
+            h3{
+                font-size: 30px;
+                text-align: left;
+                line-height: 1.5;
+                margin-bottom: 20px;
+            }
+            h4{
+                text-align: left;
+                line-height: 1.5;
+                margin-bottom: 20px;
+                span{
+                    font-size: 28px;
+                }
+                a{
+                    color: #4685f4;
+                    font-size: 28px;
+                    float: right;
+                }
+            }
+            .el-upload {
+                  border: 2px dashed #d9d9d9;
+                  border-radius: 6px;
+                  cursor: pointer;
+                  position: relative;
+                  overflow: hidden;
+                  width: 200px;
+                height: 200px;
+              }
+            .avatar-uploader-icon {
+                font-size: 28px;
+                color: #8c939d;
+                width: 100%;
+                height: 200px;
+                line-height: 200px;
+                text-align: center;
             }
         }
     }

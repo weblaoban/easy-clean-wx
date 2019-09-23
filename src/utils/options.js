@@ -1,19 +1,19 @@
 export const taskType = [
   {
     id: 1,
-    desc: '淘宝成交任务'
+    desc: '淘宝成交'
   },
   {
     id: 2,
-    desc: '淘宝浏览任务'
+    desc: '淘宝浏览'
   },
   {
     id: 3,
-    desc: ':京东成交任务'
+    desc: '京东成交'
   },
   {
     id: 4,
-    desc: '京东浏览任务'
+    desc: '京东浏览'
   }
 ];
 
@@ -35,11 +35,11 @@ export const credit=[
   },
   {
     id: 4,
-    desc: '3心'
+    desc: '4心'
   },
   {
     id: 5,
-    desc: '3心'
+    desc: '5心'
   },
   {
     id: 6,
