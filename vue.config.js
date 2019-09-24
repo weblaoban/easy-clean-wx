@@ -21,7 +21,7 @@ module.exports={
     port: '8089',
     proxy: {
       "/api":{
-        target: "http://192.168.1.241:8081/",
+        target: "http://2689087bm6.qicp.vip:35338/",
         changeOrigin: true
       }
     }

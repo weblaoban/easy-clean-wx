@@ -31,6 +31,14 @@ export default new Router({
           }
       },
     {
+      path:'/startTask/:id',
+      name: 'startTask',
+      component: ()=>import('./views/StartTask.vue'),
+      meta: {
+        title: '开始任务'
+      }
+    },
+    {
       path: '/forgetPassword',
       name: 'forgetPassword',
       component: () => import('./views/ForgetPassword.vue'),

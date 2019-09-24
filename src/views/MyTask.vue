@@ -21,7 +21,7 @@
                             <p><span>下单剩余时间：</span><span>00:59：59</span></p>
                             <p class="tip">提示：下单后24小时内返款，评价结束返佣金</p>
                             <div class="button">
-                                <el-button type="primary">开始任务</el-button>
+                                <el-button type="primary"><router-link to="/startTask/id">开始任务</router-link></el-button>
                                 <el-button type="primary">放弃任务</el-button>
                             </div>
                             <div class="button">
@@ -144,6 +144,10 @@
                             padding: 12px 20px;
                             span{
                                 font-size: 30px;
+                            }
+                            a{
+                                font-size: 30px;
+                                color: #fff;
                             }
                     }
                     }
