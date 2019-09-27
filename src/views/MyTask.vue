@@ -89,6 +89,12 @@
         .el-tabs__nav-wrap{
             width: 100%;
             padding: 0 20px;
+            .el-tabs__nav{
+                width: 100%;
+                .el-tabs__active-bar{
+                    width: 25% !important;
+                }
+            }
         }
         ul{
             li{

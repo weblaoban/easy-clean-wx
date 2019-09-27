@@ -25,11 +25,11 @@
         </div>
         <div class="item">
             <span class="label">收款银行卡号：</span>
-            <span class="content">{{info.bankCard}}</span>
+            <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.cardNumber : ''}}</span>
         </div>
         <div class="item">
             <span class="label">开户行：</span>
-            <span class="content">{{info.bankName}}</span>
+            <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.bankName : ''}} {{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.openBank : ''}}</span>
         </div>
     </div>
 </template>
@@ -39,16 +39,15 @@
     data(){
       return {
         info: {
-          name: '互评',
-          sex: '先生',
-          province: '浙江',
-          city: '杭州',
-          email:'111@qq.com',
-          phone: '111111',
-          qq: '111111111',
-          bankName:'浙江省杭州市文一路支行',
-          bankCard:'银行',
-        }
+          userWithdrawalBankCard: {}}
+      }
+    },
+    async created(){
+      const result = await this.$API.request(this.$API.getUserInfo,'POST');
+      if(result && result.success){
+        const data = result.data;
+        const sexDesc = data.sex===1?'先生':'女士';
+        this.info = {...data,sex: sexDesc}
       }
     }
   }

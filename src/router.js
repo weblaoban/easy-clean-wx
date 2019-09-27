@@ -7,6 +7,19 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
+      path: '/',
+      name: 'index',
+      redirect: '/taskApply',
+    },
+    {
+      path: '/taskApply',
+      name: 'taskApply',
+      component: () => import('./views/TaskApply.vue'),
+      meta: {
+        title: '申请任务'
+      }
+    },
+    {
       path: '/login',
       name: 'login',
       component: Login,

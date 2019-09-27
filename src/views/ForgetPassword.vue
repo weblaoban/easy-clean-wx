@@ -5,18 +5,18 @@
             <el-form-item prop="phone" label="手机号：">
                 <el-input placeholder="请输入注册时填写的手机号码" v-model="ruleForm.phone"></el-input>
             </el-form-item>
-            <el-form-item prop="code" label="手机验证码：">
-                <el-input placeholder="请输入接收到的验证码" v-model="ruleForm.code"></el-input>
-                <el-button @click.prevent="sendCode" class="code">{{codeDesc}}</el-button>
+            <el-form-item prop="verificationCode" label="手机验证码：">
+                <el-input placeholder="请输入接收到的验证码" v-model="ruleForm.verificationCode"></el-input>
+                <el-button @click.prevent="sendCode" class="code" :loading="loading">{{codeDesc}}</el-button>
             </el-form-item>
             <el-form-item prop="password" label="新登录密码：">
-                <el-input placeholder=" 请输入新登录密码" v-model="ruleForm.password" type="password"></el-input>
+                <el-input placeholder=" 请输入新登录密码" v-model="ruleForm.passWord" type="password"></el-input>
             </el-form-item>
-            <el-form-item prop="checkPass" label="确认密码：">
-                <el-input placeholder="重复输入登录密码" v-model="ruleForm.checkPass" type="password"></el-input>
+            <el-form-item prop="confimPassWord" label="确认密码：">
+                <el-input placeholder="重复输入登录密码" v-model="ruleForm.confimPassWord" type="password"></el-input>
             </el-form-item>
-            <el-form-item label-width="0">
-                <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">确定</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -30,8 +30,8 @@
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
+          if (this.ruleForm.confimPassWord !== '') {
+            this.$refs.ruleForm.validateField('confimPassWord');
           }
           callback();
         }
@@ -39,45 +39,46 @@
       const validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.password) {
+        } else if (value !== this.ruleForm.passWord) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
-        const validatePhone = (rule, value, callback) => {
-            if (value === '') {
-                callback(new Error('请输入手机号'));
-            } else {
-                callback();
-            }
-        };
+      const validatePhone = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入手机号'));
+        } else {
+          callback();
+        }
+      };
       return {
+        loading: false,
         codeDesc: '发送验证码',
         total: 180,
         ruleForm: {
           phone: '',
-          code: '',
-          password: '',
-          checkPass: '',
+          verificationCode: '',
+          passWord: '',
+          confimPassWord: '',
         },
         rules: {
-            phone: [
-                {
-                    validator: validatePhone, trigger:'blur'
-                }
-            ],
-            code:[
-                {
-                    required: true,message:'请输入手机验证码',trigger:'blur'
-                }
-            ],
-          password: [
+          phone: [
+            {
+              validator: validatePhone, trigger:'blur'
+            }
+          ],
+          verificationCode:[
+            {
+              required: true,message:'请输入手机验证码',trigger:'blur'
+            }
+          ],
+          passWord: [
             {
               validator: validatePass,trigger: 'blur'
             }
           ],
-          checkPass: [
+          confimPassWord: [
             {
               validator: validatePass2,trigger: 'blur'
             }
@@ -86,32 +87,50 @@
       }
     },
     methods: {
-      sendCode(){
+      async sendCode(){
         if(!this.ruleForm.phone){
-            this.$message({
-                message: '请输入手机号',
-                type: 'warning'
-            });
+          this.$message({
+            message: '请输入手机号',
+            type: 'warning'
+          });
           return;
         }
         if(this.total!==180){
           return;
         }
         const that = this;
-        const t = setInterval(function(){
-          that.total-=1;
-          that.codeDesc='重新发送('+that.total+')';
-          if(that.total<1){
-            that.codeDesc='发送验证码';
-            that.total=180;
-            clearInterval(t)
-          }
-        },1000)
+        this.loading=true;
+        const result = await this.$API.request(this.$API.getSmsCode,'POST',{phone: this.ruleForm.phone, type: 'pwd'});
+        this.loading=false;
+        if(result && result.success){
+          const t = setInterval(function(){
+            that.total-=1;
+            that.codeDesc=that.total+'s';
+            if(that.total<1){
+              that.codeDesc='发送验证码';
+              that.total=180;
+              clearInterval(t)
+            }
+          },1000)
+        } else {
+          this.$message.info(result.msg)
+        }
       },
       submitForm(formName) {
-        this.$refs[formName].validate((valid)=>{
+        this.$refs[formName].validate(async (valid)=>{
           if(valid){
-            console.log(this.ruleForm)
+            this.loading=true;
+            const result = await this.$API.request(this.$API.resetPassword,'POST',{...this.ruleForm, type: 'pwd'});
+            this.loading=false;
+            if(result && result.success){
+              this.$message.success('修改成功');
+              const that = this;
+              setTimeout(function(){
+                that.$router.push('/login')
+              }, 1000)
+            } else {
+              this.$message.info(result.msg)
+            }
           }else{
             return false;
           }
@@ -136,7 +155,7 @@
                 .el-button.code{
                     width: auto !important;
                     position: absolute;
-                    right:40px;
+                    right:10px;
                     padding: 5px;
                     height: 100%;
                     top:0;

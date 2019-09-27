@@ -5,17 +5,17 @@
                 <div class="img">
                     <img src="../../assets/images/head.png" alt="">
                 </div>
-                <p><span></span>欢迎回来</p>
-                <a href="">退出</a>
+                <p><span v-text="info.userName ? info.userName + '，' : ''"></span>欢迎回来</p>
+                <a @click="logOut">退出</a>
             </div>
             <div class="finance">
                 <p>
                     <span>资金余额</span>
-                    <span>2321.1</span>
+                    <span v-text="info.userAccount.balance"></span>
                 </p>
                 <p>
                     <span>提现中资金</span>
-                    <span>2321.1</span>
+                    <span v-text="info.userAccount.accountFrozen"></span>
                 </p>
             </div>
         </div>
@@ -23,20 +23,30 @@
         <div class="authentication container">
             <ul>
                 <li>
-                    <router-link to="/userInfo/realName">实名认证</router-link>
-                    <em class="suess"></em>
+                    <router-link to="/userInfo/realName" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2 || authInfo.identityAuth === 3">实名认证</router-link>
+                    <a v-if="authInfo.identityAuth === 1">实名认证</a>
+                    <em class="suess" v-if="authInfo.identityAuth === 1"></em>
+                    <em class="fail" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2"></em>
+                    <em class="checking" v-if="authInfo.identityAuth === 3"></em>
                 </li>
                 <li>
-                    <router-link to="/userInfo/phoneAuth">手机认证</router-link>
-                    <em class="suess"></em>
+                    <router-link to="/userInfo/phoneAuth" v-if="authInfo.phoneAuth === 0 || authInfo.phoneAuth === 2">手机认证</router-link>
+                    <a v-if="authInfo.phoneAuth === 1">手机认证</a>
+                    <em class="suess" v-if="authInfo.phoneAuth === 1"></em>
+                    <em class="fail" v-if="authInfo.phoneAuth === 0 || authInfo.phoneAuth === 2"></em>
                 </li>
                 <li>
-                    <router-link to="/userInfo/cardAuth">银行卡认证</router-link>
-                    <em class="suess"></em>
+                    <router-link to="/userInfo/cardAuth" v-if="authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3">银行卡认证</router-link>
+                    <a v-if="authInfo.bankAuth === 1">银行卡认证</a>
+                    <em class="suess" v-if="authInfo.bankAuth === 1"></em>
+                    <em class="fail" v-if="authInfo.bankAuth === 0 || authInfo.bankAuth === 2"></em>
+                    <em class="checking" v-if="authInfo.bankAuth === 3"></em>
                 </li>
                 <li>
-                    <a>平台规则考试认证</a>
-                    <em class="fail"></em>
+                    <router-link to="/" v-if="authInfo.ruleAuth === 0 || authInfo.ruleAuth === 2">平台规则考试认证</router-link>
+                    <a v-if="authInfo.ruleAuth === 1">平台规则考试认证</a>
+                    <em class="suess" v-if="authInfo.ruleAuth === 1"></em>
+                    <em class="fail" v-if="authInfo.ruleAuth === 0 || authInfo.ruleAuth === 2"></em>
                 </li>
             </ul>
         </div>
@@ -52,7 +62,34 @@
 </template>
 <script>
     export default {
-      name: 'userInfo'
+      name: 'userInfo',
+      data(){
+        return {
+          info: {userAccount: {}},
+          authInfo: {}
+        }
+      },
+      async created(){
+        const result = await this.$API.request(this.$API.getUserInfo,'POST');
+        const authResult = await this.$API.request(this.$API.userAuth,'POST');
+        if(authResult && authResult.success){
+          const data = authResult.data;
+          this.authInfo = data;
+        }
+        if(result && result.success){
+          const data = result.data;
+          const sexDesc = data.sex===1?'先生':'女士';
+          this.info = {...data,sex: sexDesc}
+        }
+        if (result.code === 'OVERTIME') {
+          this.$router.push('/login')
+        }
+      },
+      methods:{
+        logOut(){
+
+        }
+      }
     }
 </script>
 <style lang="scss" scoped>
@@ -73,10 +110,18 @@
                     }
                 }
                 p{
+                    padding-top: 10px;
                     color: #fff;
+                    line-height: 40px;
+                    span{
+                        line-height: 40px;
+                    }
                 }
                 a{
+                    display: block;
+                    margin-top: 15px;
                     color: #fff;
+                    line-height: 40px;
                 }
             }
         }
@@ -133,6 +178,11 @@
                             background: url(../../assets/images/wrong.png) no-repeat;
                             background-position: center;
                             background-size: 0.35rem;
+                        }
+                        &.checking{
+                            background: url(../../assets/images/checking.png) no-repeat;
+                            background-position: center;
+                            background-size: 0.28rem;
                         }
                     }
                 }

@@ -1,6 +1,10 @@
 $color: #4685f4;
 
-body, ul,li, p, h1,h2,h3,h4,h5,h6{
+body{
+  max-width: 750px;
+  margin: 0 auto !important;
+}
+body, ul, p, h1,h2,h3,h4,h5,h6{
   margin:0;
   padding:0;
   color: #333;
@@ -9,7 +13,6 @@ body, ul,li, p, h1,h2,h3,h4,h5,h6{
   list-style: none;
   text-decoration: none;
   font-size: 26px;
-  line-height: 1.5;
   box-sizing: border-box;
 }
 .container{

@@ -6,11 +6,12 @@ import API from './api';
 //  request
 axios.interceptors.request.use(function (config) {
     config.withCredentials = true
-    config.timeout = 6000
+    config.timeout = 12000
     let token = sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')).token:'';
     if (token) {
         config.headers = {
-            'access-token': token,
+            'token': token,
+            'Content-Type': 'application/json; charset=utf-8',
         }
     }
     setTimeout(() => {
@@ -78,11 +79,12 @@ function request(url, method = 'GET', formData, isUpload) {
       .then(checkStatus)
       .then(response => {
           if (response.status === 204) {
-              return response.text();
+              return response.statusText;
           }
-          return response.json();
+          return response.data;
       })
       .catch(e => {
+          store.dispatch('showLoading', false)
           const status = e.httpStatus;
           if (status === 401) {
               sessionStorage.removeItem('userInfo');

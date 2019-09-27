@@ -5,10 +5,10 @@
                 <el-input placeholder="请输入用户名" v-model="ruleForm.userName"></el-input>
             </el-form-item>
             <el-form-item prop="password">
-                <el-input placeholder="请输入登录密码" v-model="ruleForm.checkPass" type="password"></el-input>
+                <el-input placeholder="请输入登录密码" v-model="ruleForm.passWord" type="password"></el-input>
             </el-form-item>
             <el-form-item prop="payPassword">
-                <el-input placeholder=" 请输入支付密码" v-model="ruleForm.password" type="password"></el-input>
+                <el-input placeholder=" 请输入支付密码" v-model="ruleForm.payPassword" type="password"></el-input>
             </el-form-item>
                     <el-form-item prop="name">
                         <el-input placeholder="请输入真实姓名" v-model="ruleForm.name"></el-input>
@@ -24,16 +24,27 @@
                 <el-row>
                     <el-col :span="12">
                         <el-form-item prop="province">
-                        <el-select @change="provinceChange" v-model="ruleForm.province" placeholder="请输入（省）">
-                            <el-option v-for="item in provinces" :key="item" :label="item" :value="item"></el-option>
-                        </el-select>
+                            <el-select @change="provinceChange"
+                                       v-model="ruleForm.province"
+                                       placeholder="请输入（省）">
+                                <el-option
+                                        v-for="item in provinces"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.code">{{item.name}}</el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12" v-if="cities.length">
                         <el-form-item prop="city">
-                        <el-select  v-model="ruleForm.city" placeholder="请输入（市）">
-                            <el-option v-for="item in cities" :key="item" :label="item" :value="item"></el-option>
-                        </el-select>
+                            <el-select v-model="ruleForm.city"
+                                       placeholder="请输入（市）">
+                                <el-option
+                                        v-for="item in cities"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.code"></el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -47,102 +58,148 @@
             <el-form-item prop="qq">
                 <el-input placeholder=" 请输入可联系的QQ号码" v-model="ruleForm.qq"></el-input>
             </el-form-item>
-            <el-form-item prop="inviter">
-                <el-input placeholder=" 推荐人（如果有）" v-model="ruleForm.inviter"></el-input>
+            <el-form-item prop="recommendId">
+                <el-input placeholder=" 推荐人（如果有）" v-model="ruleForm.recommendId"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">注册</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">注册</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 
 <script>
-    import provinces from '../utils/city.json';
+    import getParams from '../utils/getParams';
     export default {
-        name: 'register',
-        data(){
-            return {
-                provinces: Object.keys(provinces),
-                cities: [],
-                codeDesc: '发送验证码',
-                total: 180,
-                ruleForm: {
-                    userName:'',
-                    phone: '',
-                    password: '',
-                    payPassword: '',
-                    sex: '1',
-                    realName: '',
-                    email:'',
-                    qq: '',
-                    inviter: '',
-                    province: '',
-                    city: '',
-                },
-                rules: {
-                    userName: [
-                        {
-                            required: true,message:'请输入用户名', trigger:'blur'
-                        }
-                    ],
-                    phone: [
-                        {
-                            required: true,message:'请输入手机号', trigger:'blur'
-                        }
-                    ],
-                    code:[
-                        {
-                            required: true,message:'请输入手机验证码',trigger:'blur'
-                        }
-                    ],
-                    password: [
-                        {
-                            required: true,message:'请输入密码',trigger: 'blur'
-                        }
-                    ],
-                    payPassword: [
-                        {
-                            required: true,message:'请输入支付密码',trigger: 'blur'
-                        }
-                    ],
-                    name: [
-                        {
-                            required: true,message:'请输入真实姓名', trigger:'blur'
-                        }
-                    ],
-                    province: [
-                        {
-                            required: true,message:'请选择省', trigger:'blur'
-                        }
-                    ],
-                    email: [
-                        { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-                        { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
-                    ],
-                    qq: [
-                        {
-                            required: true,message:'请输入qq号', trigger:'blur'
-                        }
-                    ]
-                }
-            }
-        },
-        methods: {
-            provinceChange(province){
-                const cities = provinces[province]?provinces[province]:[]
-              this.cities = cities;
-            },
-            submitForm(formName) {
-                this.$refs[formName].validate((valid)=>{
-                    if(valid){
-                        console.log(this.ruleForm)
-                    }else{
-                        return false;
-                    }
-                })
-            }
+      name: 'register',
+      data() {
+        return {
+          loading: false,
+          provinces: [],
+          cities: [],
+          codeDesc: '发送验证码',
+          total: 180,
+          ruleForm: {
+            userName: '',
+            phone: '',
+            passWord: '',
+            payPassword: '',
+            sex: '1',
+            name: '',
+            email: '',
+            qq: '',
+            recommendId: '',
+            province: '',
+            city: '',
+          },
+          rules: {
+            userName: [
+              {
+                required: true,
+                message: '请输入用户名',
+                trigger: 'blur'
+              }
+            ],
+            phone: [
+              {
+                required: true,
+                message: '请输入手机号',
+                trigger: 'blur'
+              }
+            ],
+            code: [
+              {
+                required: true,
+                message: '请输入手机验证码',
+                trigger: 'blur'
+              }
+            ],
+            passWord: [
+              {
+                required: true,
+                message: '请输入密码',
+                trigger: 'blur'
+              }
+            ],
+            payPassword: [
+              {
+                required: true,
+                message: '请输入支付密码',
+                trigger: 'blur'
+              }
+            ],
+            name: [
+              {
+                required: true,
+                message: '请输入真实姓名',
+                trigger: 'blur'
+              }
+            ],
+            province: [
+              {
+                required: true,
+                message: '请选择省',
+                trigger: 'blur'
+              }
+            ],
+            email: [
+              {
+                required: true,
+                message: '请输入邮箱地址',
+                trigger: 'blur'
+              },
+              {
+                type: 'email',
+                message: '请输入正确的邮箱地址',
+                trigger: ['blur', 'change']
+              }
+            ],
+            qq: [
+              {
+                required: true,
+                message: '请输入qq号',
+                trigger: 'blur'
+              }
+            ]
+          }
         }
+      },
+      async created(){
+        const recommendId = getParams(location.href,'id');
+        if(recommendId){
+          console.log('有推荐人')
+        }
+        const provinces = await this.$API.request(this.$API.getProvince);
+        if(provinces && provinces.success){
+          this.provinces = provinces.data;
+        }
+      },
+      methods: {
+        async provinceChange(province) {
+          const cities = await this.$API.request(this.$API.getCities+'?parentCode='+province,'GET',{parentCode: province});
+          if(cities && cities.success){
+            this.cities = cities.data
+          }
+        },
+        submitForm(formName) {
+          this.$refs[formName].validate(async(valid) => {
+            if (valid) {
+              this.loading = true;
+              const result = await this.$API.request(this.$API.register,'POST',{...this.ruleForm});
+              this.loading = false;
+              if(result && result.success){
+                this.$message.success('注册成功');
+                const that = this;
+                setTimeout(function(){
+                  that.$router.push('/login')
+                }, 1000)
+              }
+            } else {
+              return false;
+            }
+          })
+        }
+      }
     }
 </script>
 <style lang="scss" scoped>

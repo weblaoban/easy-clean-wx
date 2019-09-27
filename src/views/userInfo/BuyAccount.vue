@@ -5,7 +5,7 @@
                 <span>买号</span><span>上一次使用</span><span>信用</span><span>审核状态</span><span>操作</span>
             </li>
             <li v-for="item in buyerList" :key="item.id">
-                <span v-text="item.account"></span><span v-text="item.lastTime"></span><span v-text="item.credit"></span><span v-text="item.checkState"></span><span><a @click="removeBuyer(item)">删除</a></span>
+                <span v-text="item.userAccount"></span><span v-text="item.lastDate ? item.lastDate : '未使用'"></span><span v-text="item.credit"></span><span v-text="status[item.status]"></span><span><a @click="removeBuyer(item)" v-loading="deleting">删除</a></span>
             </li>
         </ul>
         <p class="tip">请注意：</p>
@@ -19,6 +19,10 @@
     name: 'buyAccount',
     data() {
       return {
+        status : {
+          0:'待通过',1:'已通过',2:'拒绝',
+        },
+        deleting: false,
         buyerList: [
           {
             id: 1,
@@ -30,21 +34,31 @@
         ],
       }
     },
+    created(){
+      this.getList();
+    },
     methods: {
-      submitForm(formName, isReset = false) {
-        if (isReset) {
-          console.log(isReset)
+      async getList(){
+        const result = await this.$API.request(this.$API.buyNumberList,'POST');
+        if(result && result.success){
+          this.buyerList = result.data;
+        }else{
+          this.$message.info(result.msg)
         }
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            console.log(this.financeInfo)
-          } else {
-            return false;
-          }
-        })
       },
-      removeBuyer(item){
-        console.log(item.id)
+      async removeBuyer(item){
+        this.deleting = true;
+        const result = await this.$API.request(this.$API.buyNumberRemove,'POST',{id: item.id});
+        this.deleting = false;
+        if(result && result.success){
+          this.$message.success('操作成功')
+          const that = this;
+          setTimeout(function(){
+            that.getList()
+          }, 1000)
+        } else {
+          this.$message.info(result.msg)
+        }
       }
     }
   }
@@ -53,7 +67,7 @@
     .blackList {
         border-radius: 0;
         margin-top: 20px;
-        padding: 40px;
+        padding: 20px;
         p {
             text-align: left;
             &.tip {
@@ -66,16 +80,25 @@
                 display: flex;
                 justify-content: space-between;
                 line-height: 60px;
+                align-items: center;
                 span{
                     line-height: 60px;
-                    flex: 1;
+                    width: 25%;
                     text-align: center;
+                    word-break: break-all;
                     a{
                         color: #4685f4;
+                    }
+                    &:first-child{
+                        min-width: 180px;
+                    }
+                    &:first-child{
+                        max-width: 135px;
                     }
                 }
                 &:first-child{
                     margin-bottom: 10px;
+                    line-height: 40px;
                     span{
                         font-weight: bold;
                     }

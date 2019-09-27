@@ -66,6 +66,7 @@
         bottom: 0;
         left:0;
         background: #fff;
+        z-index: 999;
         ul{
             display: flex;
             width: 100%;

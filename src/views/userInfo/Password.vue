@@ -7,20 +7,20 @@
             <div class="container">
                 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" label-width="100px" hide-required-asterisk>
                     <el-form-item prop="phone" label="手机号：">
-                        <span style="float: left">111111111</span>
+                        <span style="float: left" v-text="phone">111111111</span>
                     </el-form-item>
-                    <el-form-item prop="code" label="手机验证码：" class="code">
-                        <el-input placeholder="请输入接收到的验证码" v-model="ruleForm.code"></el-input>
-                        <el-button @click.prevent="sendCode" class="code">{{codeDesc}}</el-button>
+                    <el-form-item prop="verificationCode" label="手机验证码：" class="code">
+                        <el-input placeholder="请输入接收到的验证码" v-model="ruleForm.verificationCode"></el-input>
+                        <el-button @click.prevent="sendCode" class="code" :loading="sendLoading">{{codeDesc}}</el-button>
                     </el-form-item>
-                    <el-form-item prop="password" :label="currentSection==='login'?'新登录密码：':'新支付密码：'">
-                        <el-input :placeholder="currentSection==='login'?'请输入新登录密码':'请输入新支付密码'" v-model="ruleForm.password" type="password"></el-input>
+                    <el-form-item prop="newPwd" :label="currentSection==='login'?'新登录密码：':'新支付密码：'">
+                        <el-input :placeholder="currentSection==='login'?'请输入新登录密码':'请输入新支付密码'" v-model="ruleForm.newPwd" type="password"></el-input>
                     </el-form-item>
-                    <el-form-item prop="checkPass" label="确认密码：">
-                        <el-input :placeholder="currentSection==='login'?'重复输入登录密码':'重复输入支付密码'" v-model="ruleForm.checkPass" type="password"></el-input>
+                    <el-form-item prop="newPwdConfirm" label="确认密码：">
+                        <el-input :placeholder="currentSection==='login'?'重复输入登录密码':'重复输入支付密码'" v-model="ruleForm.newPwdConfirm" type="password"></el-input>
                     </el-form-item>
                     <el-form-item label-width="0" class="button">
-                        <el-button type="primary" @click="submitForm('ruleForm')">确定</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">确定</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -32,13 +32,12 @@
   export default {
     name: 'password',
     data() {
-
       const validatePass = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
         } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
+          if (this.ruleForm.newPwdConfirm !== '') {
+            this.$refs.ruleForm.validateField('newPwdConfirm');
           }
           callback();
         }
@@ -46,21 +45,23 @@
       const validatePass2 = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.password) {
+        } else if (value !== this.ruleForm.newPwd) {
           callback(new Error('两次输入密码不一致!'));
         } else {
           callback();
         }
       };
       return {
+        loading: false,
+        sendLoading: false,
         currentSection: 'login',
         codeDesc: '发送验证码',
         total: 180,
+        phone: '',
         ruleForm: {
-          phone: '111111111',
-          code: '',
-          password: '',
-          checkPass: '',
+          verificationCode: '',
+          newPwd: '',
+          newPwdConfirm: '',
         },
         rules: {
           code:[
@@ -81,9 +82,21 @@
         }
       }
     },
+    async created(){
+      const result = await this.$API.request(this.$API.getUserInfo, 'POST');
+      if (result && result.success) {
+        this.phone = result.data.phone;
+      } else {
+        if (result.code === 'OVERTIME') {
+          this.$router.push('/login')
+        } else {
+          this.$message.info(result.msg)
+        }
+      }
+    },
     methods: {
-      sendCode(){
-        if(!this.ruleForm.phone){
+      async sendCode(){
+        if(!this.phone){
           this.$message({
             message: '请输入手机号',
             type: 'warning'
@@ -94,19 +107,45 @@
           return;
         }
         const that = this;
-        const t = setInterval(function(){
-          that.total-=1;
-          that.codeDesc='重新发送('+that.total+')';
-          if(that.total<1){
-            that.codeDesc='发送验证码';
-            that.total=180;
-            clearInterval(t)
-          }
-        },1000)
+        this.sendLoading=true;
+        const type = this.currentSection==='login'?'pwd':'payPwd';
+        const result = await this.$API.request(this.$API.getSmsCode,'POST',{phone: this.phone, type: type});
+        this.sendLoading=false;
+        if(result && result.success){
+          const t = setInterval(function(){
+            that.total-=1;
+            that.codeDesc=that.total+'s';
+            if(that.total<1){
+              that.codeDesc='发送验证码';
+              that.total=180;
+              clearInterval(t)
+            }
+          },1000)
+        } else {
+          this.$message.info(result.msg)
+        }
       },
       handleClick(tab) {
         this.currentSection = tab.name;
       },
+      submitForm(formName) {
+        this.$refs[formName].validate(async (valid) => {
+          if (valid) {
+            const apiUrl = this.currentSection === 'login' ? this.$API.updatePassword : this.$API.updatePayPassword;
+            this.loading=true;
+            const result = await this.$API.request(apiUrl, 'POST', {...this.ruleForm});
+            this.loading=false;
+            if (result && result.success) {
+              this.$refs[formName].resetFields();
+              this.$message.success('修改成功')
+            } else {
+              this.$message.info(result.msg)
+            }
+          } else {
+            return false;
+          }
+        })
+      }
     }
   }
 </script>

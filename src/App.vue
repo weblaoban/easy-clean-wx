@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
+      <!--<Loading></Loading>-->
      <div v-if="showMenu">
        <Menu />
      </div>
@@ -8,6 +9,7 @@
 </template>
 <script>
   import Menu from './components/Menu';
+  // import Loading from './components/Loading';
   export default {
     name: 'app',
     data(){
@@ -17,8 +19,19 @@
     },
     components: {
       Menu,
+      // Loading,
     },
-    created(){
+    async created(){
+      const result = await this.$API.request(this.$API.getUserInfo, 'POST');
+      if (result && result.success) {
+        this.userName = result.data.userName;
+      } else {
+        if (result.code === 'OVERTIME') {
+          this.$router.push('/login')
+        } else {
+          this.$message.info(result.msg)
+        }
+      }
       const path = this.$route.path.substr(1);
       const hideHeaderList=['login','register','forgetPassword','forgetPayPassword','userDetail'];
       if(hideHeaderList.indexOf(path)>-1){

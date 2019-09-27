@@ -2,9 +2,9 @@
     <div class="userInfo blackList container">
         <el-form :inline="true" :model="financeInfo"
                  ref="finance" class="demo-form-inline">
-            <el-form-item prop="type" label="类别："
+            <el-form-item prop="category" label="类别："
                           class="userName">
-                <el-select v-model="financeInfo.type"
+                <el-select v-model="financeInfo.category"
                            placeholder="选择类别">
                     <el-option v-for="item in financeTypes"
                                :key="item.id"
@@ -22,22 +22,16 @@
                 </el-button>
             </el-form-item>
         </el-form>
-        <ul class="head">
+        <ul class="head title">
             <li>
                 <span>发生时间</span><span>类别</span><span>变动金额</span><span>账户余额</span>
             </li>
-            <li v-for="item in financeList" :key="item.id">
+        </ul>
+        <ul v-loading="loading" class="head infinite-list" v-infinite-scroll="handleCurrentChange" style="overflow:auto" infinite-scroll-distance="100">
+            <li v-for="item in financeList" :key="item.id" class="infinite-list-item">
                 <span v-text="item.addTime"></span><span v-text="item.type"></span><span v-text="item.income"></span><span v-text="item.amount"></span>
             </li>
         </ul>
-        <el-pagination
-                style="margin-top:20px"
-                @current-change="handleCurrentChange"
-                :current-page.sync="pagination.current"
-                :page-size="2"
-                layout="prev, pager, next, jumper"
-                :total="pagination.total">
-        </el-pagination>
     </div>
 </template>
 
@@ -46,9 +40,9 @@
     name: 'financeList',
     data() {
       return {
+        loading: false,
         financeInfo: {
-          type: '',
-          date: '',
+          category: '',
         },
         financeList: [
           {
@@ -56,7 +50,61 @@
             type: '不知道',
             addTime: '2019-1-1',
             amount: '1111'
-          }
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
+          {
+            income: '111',
+            type: '不知道',
+            addTime: '2019-1-1',
+            amount: '1111'
+          },
         ],
         financeTypes: [
           {
@@ -90,26 +138,44 @@
         ],
         pagination: {
           total: 4,
-          pageSize: 10,
-          current: 1
+          pageSize: 20,
+          pageNo: 1
         }
       }
     },
+    created(){
+      this.getFinanceList();
+    },
     methods: {
+      async getFinanceList(){
+        this.loading=true;
+        const params = {};
+        if(this.financeInfo.category){
+          params.category= this.financeInfo.category
+        }
+        const result = await this.$API.request(this.$API.financeList,'POST',{...this.pagination,...params});
+        this.loading=false;
+        if(result && result.success){
+          const data = result.data;
+          this.financeList = data.records;
+          const pagination = {total:data.total,pageSize: data.size, pageNo: data.current }
+          this.pagination = pagination;
+        }
+      },
       submitForm(formName, isReset = false) {
         if (isReset) {
-          console.log(isReset)
+          this.$refs[formName].resetFields();
         }
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.financeInfo)
+            this.getFinanceList();
           } else {
             return false;
           }
         })
       },
-      handleCurrentChange(e) {
-        console.log(e)
+      handleCurrentChange() {
+        console.log(this.pagination)
       }
     }
   }
@@ -142,6 +208,8 @@
                     flex: 1;
                     text-align: center;
                 }
+            }
+            &.title{
                 &:first-child{
                     margin-bottom: 10px;
                     span{

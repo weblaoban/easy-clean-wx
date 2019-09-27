@@ -2,36 +2,45 @@
     <div class="realName">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
             <el-form-item prop="name">
-                <el-input placeholder="王平（注册时填写的真实姓名，不可修改）" v-model="ruleForm.name"></el-input>
+                <el-input placeholder="（注册时填写的真实姓名，不可修改）" v-model="name" disabled></el-input>
             </el-form-item>
-            <el-form-item prop="idCard">
-                <el-input placeholder="请输入您的身份证号码" v-model="ruleForm.idCard"></el-input>
+            <el-form-item prop="idNumber">
+                <el-input placeholder="请输入您的身份证号码" v-model="ruleForm.idNumber" :disabled="authState===3"></el-input>
             </el-form-item>
-            <el-form-item prop="positive">
+            <el-form-item prop="positivePhoto">
                 <el-upload
+                        :disabled="authState===3"
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action="/api/attachment/upload"
                         :show-file-list="false"
-                        :on-success="handleAvatarSuccess">
-                    <img v-if="ruleForm.positive" :src="ruleForm.positive" class="avatar">
+                        :on-success="handleAvatarSuccess"
+                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        :data="{type:'REAL_NAME_CHART'}"
+                        name="file"
+                >
+                    <img v-if="ruleForm.positivePhoto" :src="ruleForm.positivePhoto" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
                 <p>本人手持身份证正面</p>
             </el-form-item>
-            <el-form-item prop="otherSide">
+            <el-form-item prop="backPhoto">
                 <el-upload
+                        :disabled="authState===3"
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action="/api/attachment/upload"
                         :show-file-list="false"
+                        :data="{type:'REAL_NAME_CHART'}"
+                        name="file"
+                        accept="image/png,image/gif,image/jpg,image/jpeg"
                         :on-success="handleOtherSuccess">
-                    <img v-if="ruleForm.otherSide" :src="ruleForm.otherSide" class="avatar">
+                    <img v-if="ruleForm.backPhoto" :src="ruleForm.backPhoto" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
                 <p>本人手持身份证反面</p>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
-                <el-button type="info">审核中</el-button>
+                <el-button v-if="authState===0" type="primary" @click="submitForm('ruleForm')" :loading="loading">提交</el-button>
+                <el-button v-if="authState===3" type="info">审核中</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -42,19 +51,16 @@
     name: 'realName',
     data(){
       return {
+        loading: false,
+        authState: 0,
+        name:'',
         ruleForm: {
-          name:'',
-          idCard: '',
-          positive: '',
-          otherSide: ''
+          idNumber: '',
+          positivePhoto: '',
+          backPhoto: ''
         },
         rules: {
-          name: [
-            {
-              required: true,message: '不能为空',trigger: 'blur'
-            }
-          ],
-          idCard: [
+          idNumber: [
             {
               required: true,message: '不能为空',trigger: 'blur'
             }
@@ -62,21 +68,55 @@
         }
       }
     },
+    async created(){
+      const authResult = await this.$API.request(this.$API.userAuth,'POST');
+      if(authResult && authResult.success){
+        const data = authResult.data;
+        this.authState = data.identityAuth;
+      }
+      const result = await this.$API.request(this.$API.getUserInfo,'POST');
+      if(result && result.success){
+        const data = result.data;
+        this.name = data.name;
+      }
+      if (result.code === 'OVERTIME') {
+        this.$router.push('/login')
+      }
+    },
     methods:{
       submitForm(formName) {
-        this.$refs[formName].validate((valid)=>{
-          if(valid){
-            console.log(this.ruleForm)
-          }else{
+        this.$refs[formName].validate(async (valid) => {
+          if (valid) {
+            if(!this.ruleForm.positivePhoto){
+              this.$message.error('请上传身份证正面照');
+              return;
+            }
+            if(!this.ruleForm.backPhoto){
+              this.$message.error('请上传身份证反面照');
+              return;
+            }
+            this.loading = true;
+            const result = await this.$API.request(this.$API.identityAuth, 'POST', {...this.ruleForm});
+            this.loading = false;
+            if (result && result.success) {
+              this.$message.success('提交成功')
+              const that = this;
+              setTimeout(function(){
+                that.$router.push('/userInfo')
+              }, 1000)
+            } else {
+              this.$message.error(result.msg)
+            }
+          } else {
             return false;
           }
         })
       },
-      handleAvatarSuccess(res, file) {
-        this.ruleForm.positive = URL.createObjectURL(file.raw);
+      handleAvatarSuccess(res) {
+        this.ruleForm.positivePhoto = res.msg;
       },
-      handleOtherSuccess(res, file) {
-        this.ruleForm.otherSide = URL.createObjectURL(file.raw);
+      handleOtherSuccess(res) {
+        this.ruleForm.backPhoto = res.msg;
       },
     }
   }
@@ -125,7 +165,7 @@
             text-align: center;
         }
         .avatar {
-            width: 178px;
+            width: 100%;
             height: 178px;
             display: block;
         }

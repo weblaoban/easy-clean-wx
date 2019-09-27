@@ -2,13 +2,13 @@
     <div class="realName">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
             <p>已发送验证码到您的手机</p>
-            <h4>112321323</h4>
-            <el-form-item prop="code" label="">
-                <el-input placeholder="请输入验证码" v-model="ruleForm.code"></el-input>
-                <span @click.prevent="sendCode" class="code">{{codeDesc}}</span>
+            <h4 v-text="phone"></h4>
+            <el-form-item prop="verificationCode" label="">
+                <el-input placeholder="请输入验证码" v-model="ruleForm.verificationCode"></el-input>
+                <span v-loading="sendLoading" @click.prevent="sendCode" class="code">{{codeDesc}}</span>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" v-loading="loading">提交</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -19,13 +19,16 @@
     name: 'phoneAuth',
     data(){
       return {
+        sendLoading: false,
+        loading: false,
+        phone: '',
         codeDesc: '发送验证码',
         total: 180,
         ruleForm: {
-          code:'',
+          verificationCode:'',
         },
         rules: {
-          code: [
+          verificationCode: [
             {
               required: true,message: '不能为空',trigger: 'blur'
             }
@@ -33,9 +36,19 @@
         }
       }
     },
+    async created(){
+      const result = await this.$API.request(this.$API.getUserInfo,'POST');
+      if(result && result.success){
+        const data = result.data;
+        this.phone = data.phone;
+      }
+      if (result.code === 'OVERTIME') {
+        this.$router.push('/login')
+      }
+    },
     methods:{
-      sendCode(){
-        if(!this.ruleForm.phone){
+      async sendCode(){
+        if(!this.phone){
           this.$message({
             message: '请输入手机号',
             type: 'warning'
@@ -46,20 +59,38 @@
           return;
         }
         const that = this;
-        const t = setInterval(function(){
-          that.total-=1;
-          that.codeDesc='重新发送('+that.total+')';
-          if(that.total<1){
-            that.codeDesc='发送验证码';
-            that.total=180;
-            clearInterval(t)
-          }
-        },1000)
+        this.sendLoading=true;
+        const result = await this.$API.request(this.$API.getSmsCode,'POST',{phone: this.phone, type: 'phoneAuth'});
+        this.sendLoading=false;
+        if(result && result.success){
+          const t = setInterval(function(){
+            that.total-=1;
+            that.codeDesc=that.total+'s';
+            if(that.total<1){
+              that.codeDesc='发送验证码';
+              that.total=180;
+              clearInterval(t)
+            }
+          },1000)
+        } else {
+          this.$message.info(result.msg)
+        }
       },
       submitForm(formName) {
-        this.$refs[formName].validate((valid)=>{
+        this.$refs[formName].validate(async (valid)=>{
           if(valid){
-            console.log(this.ruleForm)
+            this.loading = true;
+            const result = await this.$API.request(this.$API.phoneAuth, 'POST', {...this.ruleForm});
+            this.loading = false;
+            if (result && result.success) {
+              this.$message.success('提交成功')
+              const that = this;
+              setTimeout(function(){
+                that.$router.push('/userInfo')
+              }, 1000)
+            } else {
+              this.$message.error(result.msg)
+            }
           }else{
             return false;
           }

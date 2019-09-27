@@ -6,47 +6,52 @@
                      label-width="80px"
                      class="demo-ruleForm"
                      hide-required-asterisk="">
-                <el-form-item label="任务分类:" prop="taskType">
-                    <el-select v-model="buyerRequire.taskType">
+                <el-form-item label="任务分类:" prop="type">
+                    <el-select v-model="buyerRequire.type">
                         <el-option v-for="item in taskType" :key="item.id" :label="item.desc" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="账号：" prop="account">
-                    <el-input v-model="buyerRequire.account" placeholder="请输入买号账号" />
+                <el-form-item label="账号：" prop="userAccount">
+                    <el-input v-model="buyerRequire.userAccount" placeholder="请输入买号账号" />
                 </el-form-item>
-                <el-form-item label="账号性别:" prop="buyerSex">
-                    <el-select v-model="buyerRequire.buyerSex">
+                <el-form-item label="账号性别:" prop="sex">
+                    <el-select v-model="buyerRequire.sex">
                         <el-option v-for="item in sex" :key="item.id" :label="item.desc" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="信用积分:" prop="buyerCredit">
-                    <el-select v-model="buyerRequire.buyerCredit">
+                <el-form-item label="信用积分:" prop="credit">
+                    <el-select v-model="buyerRequire.credit">
                         <el-option v-for="item in credit" :key="item.id" :label="item.desc" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="年龄段:" prop="ages">
-                    <el-select v-model="buyerRequire.ages" placeholder="请选择">
+                <el-form-item label="年龄段:" prop="ageGroup">
+                    <el-select v-model="buyerRequire.ageGroup" placeholder="请选择">
                         <el-option v-for="item in ages" :key="item.id" :label="item.desc" :value="item.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="淘气值:" prop="naughty">
-                    <el-input v-model="buyerRequire.naughty" placeholder="请输入淘气值" />
+                <el-form-item label="淘气值:" prop="naughtyValue">
+                    <el-input v-model="buyerRequire.naughtyValue" placeholder="请输入淘气值" />
                 </el-form-item>
-                <el-form-item label="常购类目:" prop="buyCategory">
-                    <el-checkbox-group v-model="buyerRequire.buyCategory">
+                <el-form-item label="常购类目:" prop="categories">
+                    <el-checkbox-group v-model="buyerRequire.categories">
                         <el-checkbox v-for="item in buyTypes" :label="item.id" :text="item.desc" :key="item.id">{{item.desc}}</el-checkbox>
                     </el-checkbox-group>
                 </el-form-item>
                 <el-form-item label="地区:" prop="address" class="address">
                     <div class="key-item">
                         <el-form-item labelWidth="0" prop="province">
-                            <el-select @change="provinceChange" v-model="buyerRequire.province" placeholder="请输入（省）">
-                                <el-option v-for="province in provinces" :key="province" :label="province" :value="province"></el-option>
+                            <el-select @focus="areas=[];cities=[]" @change="provinceChange" v-model="buyerRequire.province" placeholder="请输入（省）">
+                                <el-option v-for="province in provinces" :key="province.code" :label="province.name" :value="province.code"></el-option>
                             </el-select>
                         </el-form-item>
                         <el-form-item v-if="cities.length" labelWidth="0" prop="city">
-                            <el-select  v-model="buyerRequire.city" placeholder="请输入（市）">
-                                <el-option v-for="city in cities" :key="city" :label="city" :value="city"></el-option>
+                            <el-select @focus="areas=[]" @change="cityChange"  v-model="buyerRequire.city" placeholder="请输入（市）">
+                                <el-option v-for="city in cities" :key="city.code" :label="city.name" :value="city.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item v-if="areas.length" labelWidth="0" prop="city" style="margin-top: 10px;">
+                            <el-select  v-model="buyerRequire.area" placeholder="请输入（区）">
+                                <el-option v-for="area in areas" :key="area.code" :label="area.name" :value="area.code"></el-option>
                             </el-select>
                         </el-form-item>
                     </div>
@@ -57,52 +62,63 @@
                 <el-divider />
                 <h3>上传该账号的淘宝截图</h3>
                 <h4><span>1、手机淘宝-我的淘宝-顶部</span><a>截图示例</a></h4>
-                <el-form-item prop="top" labelWidth="0">
+                <el-form-item prop="screenshotTop" labelWidth="0">
                     <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="/api/attachment/upload"
                             :show-file-list="false"
-                            :on-success="function(e,file){handleAvatarSuccess(e,file,'top')}">
-                        <img v-if="buyerRequire.top" :src="buyerRequire.top" class="avatar">
+                            :data="{type:'BUY_NUMBER_CHART'}"
+                            name="file"
+                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotTop')}">
+                        <img v-if="buyerRequire.screenshotTop" :src="buyerRequire.screenshotTop" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
                 <h4><span>2、手机淘宝-我的淘宝-底部</span><a>截图示例</a></h4>
-                <el-form-item prop="bottom" labelWidth="0">
+                <el-form-item prop="screenshotBottom" labelWidth="0">
                     <el-upload
-                            accept="image/jpg"
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="/api/attachment/upload"
                             :show-file-list="false"
-                            :on-success="function(e,file){handleAvatarSuccess(e,file,'bottom')}">
-                        <img v-if="buyerRequire.bottom" :src="buyerRequire.bottom" class="avatar">
+                            :data="{type:'BUY_NUMBER_CHART'}"
+                            name="file"
+                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotBottom')}">
+                        <img v-if="buyerRequire.screenshotBottom" :src="buyerRequire.screenshotBottom" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
                 <h4><span>3、手机淘宝-收货地址</span><a>截图示例</a></h4>
-                <el-form-item prop="addressImg" labelWidth="0">
+                <el-form-item prop="screenshotAddress" labelWidth="0">
                     <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="/api/attachment/upload"
                             :show-file-list="false"
-                            :on-success="function(e,file){handleAvatarSuccess(e,file,'addressImg')}">
-                        <img v-if="buyerRequire.addressImg" :src="buyerRequire.addressImg" class="avatar">
+                            :data="{type:'BUY_NUMBER_CHART'}"
+                            name="file"
+                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotAddress')}">
+                        <img v-if="buyerRequire.screenshotAddress" :src="buyerRequire.screenshotAddress" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
-                <h4><span>3、支付宝-我的</span><a>截图示例</a></h4>
-                <el-form-item prop="top" labelWidth="0">
+                <h4><span>4、淘宝截图-我的</span><a>截图示例</a></h4>
+                <el-form-item prop="screenshotMy" labelWidth="0">
                     <el-upload
                             class="avatar-uploader"
-                            action="https://jsonplaceholder.typicode.com/posts/"
+                            action="/api/attachment/upload"
                             :show-file-list="false"
-                            :on-success="function(e,file){handleAvatarSuccess(e,file,'aliPay')}">
-                        <img v-if="buyerRequire.aliPay" :src="buyerRequire.aliPay" class="avatar">
+                            :data="{type:'BUY_NUMBER_CHART'}"
+                            name="file"
+                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotMy')}">
+                        <img v-if="buyerRequire.screenshotMy" :src="buyerRequire.screenshotMy" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('buyerRequire')">提交</el-button>
+                <el-form-item label-width="0">
+                    <el-button type="primary" @click="submitForm('buyerRequire')" :loading="loading" style="width: 100%">提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -116,61 +132,65 @@
     name: 'buyerRequire',
     data() {
       return {
+        loading: false,
         taskType,
         buyTypes,
         ages,
         credit,
         sex,
-          provinces: Object.keys(provinces),
+          provinces: provinces,
           cities: [],
+        areas:[],
+        category: [],
         buyerRequire: {
-          taskType: '',
-          account: '',
-          buyerCredit: '',
-          buyCategory: [],
-          naughty:'',
-          buyerSex: '',
-          ages: '',
+          type: '',
+          userAccount: '',
+          credit: '',
+          categories: [],
+          naughtyValue:'',
+          sex: '',
+          ageGroup: '',
             province:'',
             city:'',
+          area: '',
             address:'',
-            top: '',
-            bottom: '',
-            addressImg: '',
-            aliPay: '',
+          screenshotTop: '',
+          screenshotBottom: '',
+          screenshotAddress: '',
+          screenshotMy: '',
         },
         rules: {
-            taskType: [
+          type: [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            account:  [
+          userAccount:  [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            buyerCredit:  [
+            credit:  [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            buyCategory:[
+          categories:[
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            naughty: [
+          naughtyValue: [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            buyerSex:  [
+            sex:  [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            ages:  [
+          ageGroup:  [
                 {
                     required: true, message:'不能为空',trigger:'blur'
                 }
@@ -190,45 +210,51 @@
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
-            top:  [
-                {
-                    required: true, message:'不能为空',trigger:'blur'
-                }
-            ],
-            bottom:  [
-                {
-                    required: true, message:'不能为空',trigger:'blur'
-                }
-            ],
-            addressImg:  [
-                {
-                    required: true, message:'不能为空',trigger:'blur'
-                }
-            ],
-            aliPay: [
-                {
-                    required: true, message:'不能为空',trigger:'blur'
-                }
-            ],
         },
-        formData: new FormData(),
       }
     },
     methods: {
-      submit() {
-        this.$refs.buyerRequire.validate((valid) => {
-          if (!valid) {
+      submitForm() {
+        this.$refs.buyerRequire.validate(async (valid) => {
+          if (valid) {
+            const {screenshotTop, screenshotBottom, screenshotAddress, screenshotMy} = this.buyerRequire;
+            if(!screenshotTop || !screenshotBottom || !screenshotAddress || !screenshotMy){
+              this.$message.info('请上传淘宝截图');
+              return;
+            }
+            const categories = [...this.buyerRequire.categories];
+            this.categories = categories.map(item=>{return {category:item}});
+            this.loading = true;
+            const result = await this.$API.request(this.$API.addBuyNumber, 'POST', {...this.buyerRequire, categories: this.categories});
+            this.loading = false;
+            if (result && result.success) {
+              this.$message.success('添加成功')
+              const that = this;
+              setTimeout(function(){
+                that.$router.push('/userInfo/buyerAccount')
+              }, 1000)
+            } else {
+              this.$message.error(result.msg)
+            }
+          } else {
             return false;
           }
         })
       },
       provinceChange(province){
-        const cities = provinces[province]?provinces[province]:[]
+        this.cities = []
+        const cities = provinces.find(function(item){return item.code===province})?provinces.find(function(item){return item.code===province}).cityList : []
         this.cities = cities;
       },
-        handleAvatarSuccess(res, file, type) {
-          console.log(type)
-//            this.ruleForm.positive = URL.createObjectURL(file.raw);
+      cityChange(city){
+        this.areas=[];
+        const areas = this.cities.find(function(item){return item.code===city})?this.cities.find(function(item){return item.code===city}).areaList : []
+        console.log(areas)
+        this.areas = areas;
+      },
+        handleAvatarSuccess(res, type) {
+          if(res && res.success)
+           this.buyerRequire[type] = res.msg;
         },
     }
   }
@@ -296,7 +322,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
-                margin-left: 20px;
+                flex-wrap: wrap;
                 p {
                     color: #606266;
                     font-size: 14px;
@@ -337,8 +363,10 @@
                   cursor: pointer;
                   position: relative;
                   overflow: hidden;
-                  width: 200px;
-                height: 200px;
+                  width: 100%;
+                img{
+                    width: 100%;
+                }
               }
             .avatar-uploader-icon {
                 font-size: 28px;

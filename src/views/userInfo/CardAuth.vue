@@ -2,23 +2,19 @@
     <div class="realName">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
             <el-form-item prop="name">
-                <el-input placeholder="王平（注册时填写的真实姓名，不可修改）" v-model="ruleForm.name"></el-input>
+                <el-input placeholder="王平（注册时填写的真实姓名，不可修改）" v-model="name" disabled></el-input>
             </el-form-item>
-            <el-form-item prop="idCard">
-                <el-input placeholder="请输入您的身份证号码" v-model="ruleForm.idCard"></el-input>
+            <el-form-item prop="idNumber">
+                <el-input placeholder="请输入您的身份证号码" v-model="ruleForm.idNumber"></el-input>
             </el-form-item>
-            <el-form-item prop="bankCard">
-                <el-input placeholder="请输入您的银行借记卡卡号" v-model="ruleForm.bankCard"></el-input>
+            <el-form-item prop="bankName">
+                <el-input placeholder="请输入银行名称" v-model="ruleForm.bankName"></el-input>
             </el-form-item>
-            <el-form-item prop="phone">
-                <el-input placeholder="请输入银行卡预留手机号" v-model="ruleForm.phone"></el-input>
-                <span @click.prevent="sendCode" class="code">{{codeDesc}}</span>
-            </el-form-item>
-            <el-form-item prop="smsCode">
-                <el-input placeholder="请输入手机验证码" v-model="ruleForm.smsCode"></el-input>
+            <el-form-item prop="cardNumber">
+                <el-input placeholder="请输入您的银行借记卡卡号" v-model="ruleForm.cardNumber"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">提交</el-button>
             </el-form-item>
         </el-form>
     </div>
@@ -29,37 +25,25 @@
     name: 'realName',
     data(){
       return {
-        codeDesc: '发送验证码',
-        total: 180,
+        loading: false,
+        name:'',
         ruleForm: {
-          name:'',
-          idCard: '',
-          bankCard: '',
-          phone: '',
-          smsCode: ''
+          idNumber: '',
+          cardNumber: '',
+          bankName: ''
         },
         rules: {
-          name: [
+          idNumber: [
             {
               required: true,message: '不能为空',trigger: 'blur'
             }
           ],
-          idCard: [
+          cardNumber: [
             {
               required: true,message: '不能为空',trigger: 'blur'
             }
           ],
-          bankCard: [
-            {
-              required: true,message: '不能为空',trigger: 'blur'
-            }
-          ],
-          phone: [
-            {
-              required: true,message: '不能为空',trigger: 'blur'
-            }
-          ],
-          smsCode: [
+          bankName: [
             {
               required: true,message: '不能为空',trigger: 'blur'
             }
@@ -67,33 +51,29 @@
         }
       }
     },
+    async created(){
+      const result = await this.$API.request(this.$API.getUserInfo,'POST');
+      if(result && result.success){
+        const data = result.data;
+        this.name = data.name;
+      }
+    },
     methods:{
-      sendCode(){
-        if(!this.ruleForm.phone){
-          this.$message({
-            message: '请输入手机号',
-            type: 'warning'
-          });
-          return;
-        }
-        if(this.total!==180){
-          return;
-        }
-        const that = this;
-        const t = setInterval(function(){
-          that.total-=1;
-          that.codeDesc='重新发送('+that.total+')';
-          if(that.total<1){
-            that.codeDesc='发送验证码';
-            that.total=180;
-            clearInterval(t)
-          }
-        },1000)
-      },
       submitForm(formName) {
-        this.$refs[formName].validate((valid)=>{
+        this.$refs[formName].validate(async (valid)=>{
           if(valid){
-            console.log(this.ruleForm)
+            this.loading = true;
+            const result = await this.$API.request(this.$API.bankAuth, 'POST', {...this.ruleForm});
+            this.loading = false;
+            if (result && result.success) {
+              this.$message.success('提交成功')
+              const that = this;
+              setTimeout(function(){
+                that.$router.push('/userInfo')
+              }, 1000)
+            } else {
+              this.$message.error(result.msg)
+            }
           }else{
             return false;
           }
