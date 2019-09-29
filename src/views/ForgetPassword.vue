@@ -15,7 +15,7 @@
             <el-form-item prop="confimPassWord" label="确认密码：">
                 <el-input placeholder="重复输入登录密码" v-model="ruleForm.confimPassWord" type="password"></el-input>
             </el-form-item>
-            <el-form-item>
+            <el-form-item label-width="0">
                 <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">确定</el-button>
             </el-form-item>
         </el-form>
@@ -166,7 +166,7 @@
                 float: left;
             }
             .el-button{
-                width: 100%;
+                width: 80%;
             }
         }
     }

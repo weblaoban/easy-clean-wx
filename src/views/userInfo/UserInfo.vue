@@ -1,5 +1,5 @@
 <template>
-    <div class="userInfo">
+    <div class="userInfo" v-loading="loading">
         <div class="head">
             <div class="container headInfo">
                 <div class="img">
@@ -21,7 +21,7 @@
         </div>
         <div style="height: 50px;line-height: 50px;text-align: center;border-bottom: solid 2px #ddd;background: #fff;">我的认证</div>
         <div class="authentication container">
-            <ul>
+            <ul v-loading="loading">
                 <li>
                     <router-link to="/userInfo/realName" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2 || authInfo.identityAuth === 3">实名认证</router-link>
                     <a v-if="authInfo.identityAuth === 1">实名认证</a>
@@ -65,13 +65,16 @@
       name: 'userInfo',
       data(){
         return {
+          loading: false,
           info: {userAccount: {}},
           authInfo: {}
         }
       },
       async created(){
+        this.loading = true;
         const result = await this.$API.request(this.$API.getUserInfo,'POST');
         const authResult = await this.$API.request(this.$API.userAuth,'POST');
+        this.loading = false;
         if(authResult && authResult.success){
           const data = authResult.data;
           this.authInfo = data;

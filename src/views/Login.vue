@@ -63,7 +63,7 @@
     }
   }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
     h4{
         font-size: 24px;
         color: #666;
@@ -87,8 +87,18 @@
                 text-align: center;
             }
         }
-    }
-    .el-button{
-        width: 100%;
+        .el-input{
+            line-height: 80px;
+            .el-input__inner{
+                height: 80px;
+                &::placeholder{
+                    font-size: 26px;
+                }
+            }
+        }
+        .el-button{
+            width: 100%;
+            height: 80px;
+        }
     }
 </style>

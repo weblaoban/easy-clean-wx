@@ -1,5 +1,5 @@
 <template>
-    <div class="extension">
+    <div class="myTask">
         <el-tabs v-model="currentSection"
                  @tab-click="handleClick">
             <el-tab-pane v-for="item in taskType" :label="item.desc" :name="(item.id).toString()" :key="item.id">
@@ -84,7 +84,7 @@
     }
 </script>
 <style lang="scss">
-    .extension {
+    .myTask {
         font-size: 24px;
         .el-tabs__nav-wrap{
             width: 100%;

@@ -23,15 +23,7 @@
           0:'待通过',1:'已通过',2:'拒绝',
         },
         deleting: false,
-        buyerList: [
-          {
-            id: 1,
-            account: '111',
-            lastTime: '2019-1-1',
-            credit: '3心',
-            checkState: '已审核',
-          }
-        ],
+        buyerList: [],
       }
     },
     created(){

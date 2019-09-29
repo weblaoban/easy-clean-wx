@@ -20,6 +20,8 @@ const url = {
     financeList:'userCapitalFlow/list', // 提现
     updatePassword: 'user/updatePwd', // 修改登录密码
     updatePayPassword: 'user/updatePayPwd', // 修改登录密码
+    taskList: 'userTask/list', // 可申请任务列表
+    checkBuyer:'userTask/check',
 }
 for (let key in url) {
     url[key] = host + url[key]

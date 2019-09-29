@@ -81,6 +81,12 @@ function request(url, method = 'GET', formData, isUpload) {
           if (response.status === 204) {
               return response.statusText;
           }
+          if (response.data.code === 'OVERTIME') {
+              sessionStorage.removeItem('userInfo');
+              router.replace({
+                  path: 'login',
+              })
+          }
           return response.data;
       })
       .catch(e => {
