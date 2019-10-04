@@ -58,8 +58,8 @@
             <el-form-item prop="qq">
                 <el-input placeholder=" 请输入可联系的QQ号码" v-model="ruleForm.qq"></el-input>
             </el-form-item>
-            <el-form-item prop="recommendId">
-                <el-input placeholder=" 推荐人（如果有）" v-model="ruleForm.recommendId"></el-input>
+            <el-form-item prop="recommendId" v-if="recommendId">
+                <el-input disabled placeholder=" 推荐人（如果有）" v-model="recommendName"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">注册</el-button>
@@ -79,6 +79,8 @@
           cities: [],
           codeDesc: '发送验证码',
           total: 180,
+            recommendId:'',
+            recommendName: '',
           ruleForm: {
             userName: '',
             phone: '',
@@ -88,7 +90,6 @@
             name: '',
             email: '',
             qq: '',
-            recommendId: '',
             province: '',
             city: '',
           },
@@ -167,7 +168,11 @@
       async created(){
         const recommendId = getParams(location.href,'id');
         if(recommendId){
-          console.log('有推荐人')
+            this.recommendId = recommendId;
+          const recommendName = await this.$API.request(this.$API.getUserByRecommend, 'POST',{recommendId});
+          if(recommendName && recommendName.success){
+              this.recommendName = recommendName.data.userName;
+          }
         }
         const provinces = await this.$API.request(this.$API.getProvince);
         if(provinces && provinces.success){
@@ -185,7 +190,7 @@
           this.$refs[formName].validate(async(valid) => {
             if (valid) {
               this.loading = true;
-              const result = await this.$API.request(this.$API.register,'POST',{...this.ruleForm});
+              const result = await this.$API.request(this.$API.register,'POST',{...this.ruleForm, recommendId: this.recommendId});
               this.loading = false;
               if(result && result.success){
                 this.$message.success('注册成功');

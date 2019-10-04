@@ -7,7 +7,7 @@
                     <div class="section">
                         <div class="title">
                             <p>我要获得推荐资格</p>
-                            <div class="button">点击报名</div>
+                            <div class="button" v-loading="loading" @click="getRecommendAuth">点击报名</div>
                         </div>
                         <p>
                             如果你希望推荐朋友，获得朋友额外每单一元的佣金，请先点击报名，我们会审核并给与推荐资格</p>
@@ -15,7 +15,7 @@
                     <div class="section">
                         <div class="title">
                             <p>推荐商家</p>
-                            <div class="button" @click="copyTextToClipboard('111')">点击复制商家注册链接</div>
+                            <div class="button" @click="copyTextToClipboard(linkList+'/#/register?id='+userInfo.id)">点击复制商家注册链接</div>
                         </div>
                         <p>
                             发送注册链接至商家，请用PC端打开，商家每放一单你都能得到1元提成</p>
@@ -25,27 +25,27 @@
                     <div class="section">
                         <div class="title">
                             <p>推荐试用朋友</p>
-                            <div class="button">点击复制推广注册链接</div>
+                            <div class="button" @click="copyTextToClipboard(linkList+'/#/register?id='+userInfo.id)">点击复制推广注册链接</div>
                         </div>
                         <p>发送注册链接至朋友，只能用手机端打开，朋友完成任务后，他每做一单，你都能得到1元提成</p>
                     </div>
                     <div class="section">
                         <div class="title">
                             <p>推荐商家</p>
-                            <div class="button" @click="copyTextToClipboard('111')">点击复制商家注册链接</div>
+                            <div class="button" @click="copyTextToClipboard(linkList+'/#/register?id='+userInfo.id)">点击复制商家注册链接</div>
                         </div>
-                        <p>\发送注册链接至商家，请用PC端打开，商家每放一单你都能得到1元提成</p>
+                        <p>发送注册链接至商家，请用PC端打开，商家每放一单你都能得到1元提成</p>
                     </div>
                 </div>
                 <p class="tip">推广一个商家，远胜推荐1000个朋友，请大家加油推荐</p>
             </el-tab-pane>
-            <el-tab-pane label="我推荐的" name="list">
+            <el-tab-pane label="我推荐的" name="list" v-loading="getListLoading">
                 <ul class="head">
                     <li>
                         <span>用户名</span><span>姓名</span><span>注册时间</span><span>完成试用数/发布任务数</span>
                     </li>
                     <li v-for="item in inviteList" :key="item.id">
-                        <span v-text="item.userName">用户名</span><span v-text="item.name">姓名</span><span v-text="item.registerTime">注册时间</span><span v-text="item.publishTaskNum">完成试用数/发布任务数</span>
+                        <span v-text="item.userName">用户名</span><span v-text="item.name">姓名</span><span v-text="item.createDate">注册时间</span><span v-text="item.taskNum">完成试用数/发布任务数</span>
                     </li>
                 </ul>
             </el-tab-pane>
@@ -59,23 +59,54 @@
     data() {
       return {
         currentSection: 'link',
-        hasBind: true,
-        inviteList: [
-          {
-            id: 1,
-            userName: '用户名',
-            name: '姓名',
-            registerTime: '',
-            taskNum: '1',
-            publishTaskNum: '2'
-          }
-        ]
+        hasBind: false,
+          loading: false,
+          getListLoading: false,
+        inviteList: [],
+          linkList:'',
+          userInfo: sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')):{}
       }
     },
+      async created(){
+        this.getAuth();
+          this.getList();
+          const linkResult = await this.$API.request(this.$API.invitationLink,'GET');
+          if(linkResult && linkResult.success){
+              this.linkList = linkResult.msg;
+          }
+
+      },
     methods: {
+          async getAuth(){
+              const authResult = await this.$API.request(this.$API.userAuth,'POST');
+              if(authResult && authResult.success){
+                  const data = authResult.data;
+                  this.hasBind = data.recommendAuth===1;
+              }
+
+          },
+          async getList(){
+              this.getList = true;
+              const inviteList = await this.$API.request(this.$API.userRecommendList,'POST');
+              this.getList = false;
+              if(inviteList && inviteList.success){
+                  this.inviteList = inviteList.data;
+              }
+
+          },
       handleClick(tab) {
         this.currentSection = tab.name;
       },
+        async getRecommendAuth(){
+           this.loading=true;
+            const getRecommendAuth = await this.$API.request(this.$API.getRecommendAuth,'POST');
+           this.loading=false;
+           if(getRecommendAuth && getRecommendAuth.success){
+               this.$message.success('报名成功')
+           } else{
+               this.$message.success(getRecommendAuth.msg)
+           }
+        },
       copyTextToClipboard(text) {
         const textArea = document.createElement('textarea');
         textArea.style.position = 'fixed';

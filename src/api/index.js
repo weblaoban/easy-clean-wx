@@ -1,7 +1,8 @@
 import axios from 'axios';
 import store from '../store';
-import router from 'vue-router';
+import router from '../router';
 import API from './api';
+import { Message } from 'element-ui'
 
 //  request
 axios.interceptors.request.use(function (config) {
@@ -81,11 +82,16 @@ function request(url, method = 'GET', formData, isUpload) {
           if (response.status === 204) {
               return response.statusText;
           }
-          if (response.data.code === 'OVERTIME') {
+          if (response.data && response.data.code === 'OVERTIME' || response.code === 'OVERTIME') {
               sessionStorage.removeItem('userInfo');
-              router.replace({
-                  path: 'login',
-              })
+              const location = window.location.href;
+              if(location.indexOf('login')>-1|| location.indexOf('register')>-1||location.indexOf('forgetPassword')>-1) {
+
+              } else {
+                  router.replace({
+                      path: 'login',
+                  })
+              }
           }
           return response.data;
       })
@@ -96,7 +102,11 @@ function request(url, method = 'GET', formData, isUpload) {
               sessionStorage.removeItem('userInfo');
               window.location.href = `/login?redirect=${e.url}`;
           } else {
-              alert(`Ops! get a error: ${status}`);
+              Message({
+                  message: '网络错误',
+                  type: 'error',
+                  duration: 3 * 1000
+              })
           }
       });
 }

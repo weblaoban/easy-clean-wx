@@ -2,10 +2,12 @@
     <div class="taskApply">
         <el-tabs v-model="currentSection"
                  @tab-click="handleClick">
-            <el-tab-pane v-for="item in taskType"
+            <el-tab-pane v-loading="loading" v-for="item in taskType"
                          :label="item.desc"
                          :name="(item.id).toString()"
-                         :key="item.id">
+                         :key="item.id"
+                         :disabled="item.id!==1"
+            >
                 <ul v-if="taskList.length"
                     v-loading="loading">
                     <li v-for="item in taskList"
@@ -103,14 +105,17 @@
                         </div>
                     </li>
                 </ul>
-                <p v-if="!taskList.length">
-                    平台当前还有<span>（数量）</span>个任务未被申请，当前时间段已全部申请完毕，下一波任务来临时间为
-                    <span>2019-12-15 15:50</span>，请各位提前做好准备
+                <p v-if="!taskList.length && nextTask.count">
+                    平台当前还有（<span v-text="nextTask.count"></span>）个任务未被申请，当前时间段已全部申请完毕，下一波任务来临时间为
+                    <span v-text="nextTask.startDate">2019-12-15 15:50</span>，请各位提前做好准备
+                </p>
+                <p v-if="!taskList.length && !nextTask.count">
+                    平台当前还有（<span v-text="nextTask.count"></span>）个任务未被申请
                 </p>
             </el-tab-pane>
         </el-tabs>
         <el-dialog v-loading="loadingGetBuyer" title="选择买号"
-                   :visible.sync="dialogFormVisible">
+                   :visible.sync="dialogFormVisible" :before-close="hideDialog">
             <el-form ref="buyerForm">
                 <el-form-item>
                     <el-select v-model="buyerAccount"
@@ -131,7 +136,17 @@
                 </el-button>
                 <el-button type="primary"
                            @click="handelApplyTask"
-                           :loading="loadingApply">确认
+                           :loading="loadingApply || loadingCheckBuyer">确认
+                </el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog
+                   :visible.sync="showVerifyDialog" :before-close="hideVerifyDialog">
+            <p>请先在个人中心完成实名认证、手机认证、银行卡认证、平台规则考试，完成后才可申请任务</p>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary"
+                           @click="hideVerifyDialog">确认
                 </el-button>
             </div>
         </el-dialog>
@@ -152,19 +167,29 @@
         loading: false,
         loadingApply: false,
         loadingGetBuyer: false,
+          loadingCheckBuyer: false,
         taskType,
         currentSection: '1',
         dialogFormVisible: false,
+          showVerifyDialog: false,
         buyerAccount: '',
         taskList: [],
         buyerList: [],
         id: 0,
         tips: '',
+          authInfo: {},
+          nextTask: {}
       }
     },
     async created() {
       this.getList();
       this.getBuyerList();
+        const authResult = await this.$API.request(this.$API.userAuth,'POST');
+        this.loading = false;
+        if(authResult && authResult.success){
+            const data = authResult.data;
+            this.authInfo = data;
+        }
     },
     methods: {
       async getBuyerList() {
@@ -186,6 +211,14 @@
         if (result && result.success) {
           const data = result.data;
           this.taskList = data;
+          if(!data.length){
+              this.loading = true;
+              const nextTask = await this.$API.request(this.$API.nextTask, 'POST');
+              this.loading = false;
+              if (nextTask && nextTask.success) {
+                  this.nextTask = nextTask.data;
+              }
+          }
         } else {
           if (result.msg === 'token is invalid,please login again!') {
             this.$router.push('/login')
@@ -196,12 +229,12 @@
         this.currentSection = tab.name;
       },
       async buyerChange(value) {
-        this.loading = true;
+        this.loadingCheckBuyer = true;
         const result = await this.$API.request(this.$API.checkBuyer, 'POST', {
           buyNumberId: value,
           taskId: this.id
         });
-        this.loading = false;
+        this.loadingCheckBuyer = false;
         if (result && !result.success) {
           this.tips = result.msg
         } else {
@@ -214,24 +247,48 @@
         this.dialogFormVisible = true;
       },
       async handelApplyTask() {
+          const authInfo = this.authInfo;
+          if(authInfo.identityAuth!==1||authInfo.phoneAuth!==1||authInfo.bankAuth!==1||authInfo.ruleAuth!==1){
+              this.showVerifyDialog = true;
+              return;
+          }
         if(!this.buyerAccount){
           return;
         }
         if (this.tips) {
-          this.$message.error(this.tips)
+          this.$message.error(this.tips);
           return;
         } else {
           this.loadingApply = true;
-          const result = await this.$API.request(this.$API.checkBuyer, 'POST', {
+          const result = await this.$API.request(this.$API.taskApply, 'POST', {
             buyNumberId: this.buyerAccount,
-            taskId: this.id
+            taskSubId: this.id
           });
+            this.loadingApply = false;
+          if(result && result.success){
+              const that = this;
+              this.$message.success('申请成功')
+              this.dialogFormVisible = false;
+              this.tips = '';
+              setTimeout(function(){
+                  that.$router.push('/myTask');
+              }, 1000)
+              this.getList()
+          } else {
+              this.$message.success(result.msg)
+              this.dialogFormVisible = false;
+          }
         }
       },
       hideDialog() {
         this.buyerAccount = '';
         this.dialogFormVisible = false;
-      }
+          this.tips = '';
+      },
+        hideVerifyDialog(){
+            this.showVerifyDialog = false;
+            this.$router.push('/userInfo')
+  },
     }
   }
 </script>
@@ -246,8 +303,10 @@
 
             .el-tabs__nav {
                 width: 100%;
-
-                .el-tabs__active-bar {
+                .el-tabs__item{
+                    padding: 0;
+                }
+                .el-tabs__active-bar, .el-tabs__item {
                     width: 25% !important;
                 }
             }

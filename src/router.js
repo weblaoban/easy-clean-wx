@@ -4,7 +4,7 @@ import Login from './views/Login.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -43,8 +43,16 @@ export default new Router({
               title: '我的任务'
           }
       },
+      {
+          path:'/evaluate/:orderId/:taskSubId/:taskId',
+          name: 'evaluate',
+          component: ()=>import('./views/Evaluate.vue'),
+          meta: {
+              title: '评价宝贝'
+          }
+      },
     {
-      path:'/startTask/:id',
+      path:'/startTask/:taskId/:taskSubId/:buyerNumberId/:id',
       name: 'startTask',
       component: ()=>import('./views/StartTask.vue'),
       meta: {
@@ -106,6 +114,14 @@ export default new Router({
             title: '银行卡认证'
           }
         },
+          {
+              path:'ruleAuth',
+              name: 'ruleAuth',
+              component: ()=>import('./views/userInfo/RuleAuth.vue'),
+              meta: {
+                  title: '平台规则考试'
+              }
+          },
         {
           path:'withdraw',
           name: 'withdraw',
@@ -158,3 +174,20 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, from, next) => {
+  const userInfo = sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')):{};
+    if (to.path === '/login') {
+        next()
+    } else if(to.path==='/register'){
+        next()
+    } else if(to.path==='/forgetPassword'){
+        next()
+    } else {
+        if (userInfo && userInfo.id) {
+            next()
+        } else {
+            router.push('/login')
+        }
+    }
+})
+export default router;

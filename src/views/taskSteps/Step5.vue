@@ -1,16 +1,19 @@
 <template>
-   <div class="step">
+   <div class="step5">
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-           <h4>五、 浏览副宝贝</h4>
-           <p>1、浏览副宝贝数量为：（按照实际数量）</p>
-           <p>2、截图上传（如果任务发布时选取了要求）</p>
-           <el-form-item prop="top" labelWidth="0">
+           <h4>{{indexDesc[(steps.indexOf(5)+1)]}}、 浏览副宝贝</h4>
+           <p>1、浏览副宝贝数量为：{{taskRequire.isBrowseBaby}}</p>
+           <p v-if="taskRequire.isScreenshot">2、截图上传（如果任务发布时选取了要求）</p>
+           <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
                        class="avatar-uploader"
-                       action="https://jsonplaceholder.typicode.com/posts/"
+                       action="/api/attachment/upload"
                        :show-file-list="false"
-                       :on-success="function(e,file){handleAvatarSuccess(e,file,'top')}">
-                   <img v-if="ruleForm.top" :src="ruleForm.top" class="avatar">
+                       :data="{type:'ORDERS_CHART'}"
+                       name="file"
+                       accept="image/png,image/gif,image/jpg,image/jpeg"
+                       :on-success="function(e,file){handleAvatarSuccess(e,file,'picture1')}">
+                   <img v-if="ruleForm.picture1" :src="ruleForm.picture1" class="avatar">
                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                </el-upload>
            </el-form-item>
@@ -24,12 +27,10 @@
 <script>
   export default {
     name: 'startTask',
+      props: ['taskRequire','steps', 'ruleForm'],
     data(){
       return{
-         ruleForm: {
-           name: '',
-           top: ''
-         },
+          indexDesc:{1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七'},
         rules: {
            name:[
              {
@@ -61,17 +62,20 @@
         document.body.removeChild(textArea);
       },
       handleAvatarSuccess(res, file, type) {
-        console.log(type)
-//            this.ruleForm.positive = URL.createObjectURL(file.raw);
+            this.ruleForm.picture1 = res.msg;
       },
       goPrev(){
-        this.$emit('submit', 4);
+          this.$emit('submit', this.steps[this.steps.indexOf(5)-1]);
       },
       submitForm(formName) {
         this.$refs[formName].validate((valid)=>{
           if(valid){
-            console.log(this.ruleForm)
-            this.$emit('submit', 6);
+              if(!this.ruleForm.picture1 && this.taskRequire.isScreenshot) {
+                  this.$message.info('请上传截图');
+                  return;
+              } else {
+                  this.$emit('submit', this.steps[this.steps.indexOf(5)+1]);
+              }
           }else{
             return false;
           }
@@ -81,7 +85,7 @@
   }
 </script>
 <style lang="scss">
-.step{
+.step5{
     padding: 20px 30px 100px;
     .el-form{
         text-align: left;
@@ -110,8 +114,12 @@
         position: relative;
         overflow: hidden;
         width: 400px;
-        height: 200px;
+        min-height: 200px;
         float: left;
+        img{
+            width: 400px;
+            min-height: 200px;
+        }
     }
     .avatar-uploader-icon {
         font-size: 28px;

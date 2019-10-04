@@ -21,7 +21,20 @@ const url = {
     updatePassword: 'user/updatePwd', // 修改登录密码
     updatePayPassword: 'user/updatePayPwd', // 修改登录密码
     taskList: 'userTask/list', // 可申请任务列表
-    checkBuyer:'userTask/check',
+    myTaskList: 'userTask/myTask', // 我的任务列表
+    taskDetail: 'userTask/taskDetail', // 任务详情
+    checkBuyer:'userTask/check',//选择买号
+    taskApply: 'userTask/apply', // 申请任务
+    comment: 'orders/comment', //评价宝贝
+    selectComment: 'userTask/selectComment', //评价宝贝要求
+    giveUp: 'userTask/giveUp', //放弃任务
+    startTask: 'orders/step', //开始任务
+    getRecommendAuth: 'userRecommend/auth', //获取推荐资格
+    userRecommendList: 'userRecommend/list', //获取推荐好友列表
+    invitationLink: 'userRecommend/invitationLink', //邀请好友域名
+    getUserByRecommend: 'userRecommend/getUserByRecommend', //追加奖励
+    ruleAuth: 'userAuthentication/ruleAuth', //规则认证
+    nextTask: 'userTask/nextTask', //下一波任务
 }
 for (let key in url) {
     url[key] = host + url[key]

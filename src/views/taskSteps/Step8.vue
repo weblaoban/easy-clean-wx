@@ -1,28 +1,32 @@
 <template>
    <div class="step">
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-           <h4>八、 拍下宝贝</h4>
+           <h4>{{indexDesc[(steps.indexOf(8)+1)]}}、 拍下宝贝</h4>
            <p>1、预购买的宝贝提前收藏</p>
            <p>2、请输入你实际支付的金额</p>
-           <el-form-item prop="amount">
-               <el-input placeholder="实际支付的金额" v-model="ruleForm.amount"></el-input>
+           <el-form-item prop="value1">
+               <el-input placeholder="实际支付的金额" v-model="ruleForm.value1"></el-input>
            </el-form-item>
            <p>3、请输入宝贝订单编号</p>
-           <el-form-item prop="orderId">
-               <el-input placeholder="宝贝订单编号" v-model="ruleForm.orderId"></el-input>
+           <el-form-item prop="value2">
+               <el-input placeholder="宝贝订单编号" v-model="ruleForm.value2"></el-input>
            </el-form-item>
-           <el-form-item prop="top" labelWidth="0">
+           <p v-if="taskRequire.isPaymentScreenshot">4、付款截图上传（如果任务发布时选取了要求）</p>
+           <el-form-item prop="top" labelWidth="0" v-if="taskRequire.isPaymentScreenshot">
                <el-upload
                        class="avatar-uploader"
-                       action="https://jsonplaceholder.typicode.com/posts/"
+                       action="/api/attachment/upload"
                        :show-file-list="false"
-                       :on-success="function(e,file){handleAvatarSuccess(e,file,'top')}">
-                   <img v-if="ruleForm.top" :src="ruleForm.top" class="avatar">
+                       :data="{type:'ORDERS_CHART'}"
+                       name="file"
+                       accept="image/png,image/gif,image/jpg,image/jpeg"
+                       :on-success="function(e,file){handleAvatarSuccess(e,file,'picture1')}">
+                   <img v-if="ruleForm.picture1" :src="ruleForm.picture1" class="avatar">
                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                </el-upload>
            </el-form-item>
            <div class="button">
-               <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
+               <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">提交</el-button>
            </div>
        </el-form>
    </div>
@@ -30,23 +34,21 @@
 <script>
   export default {
     name: 'startTask',
+      props: ['taskRequire','steps', 'ruleForm', 'loading'],
     data(){
       return{
-         ruleForm: {
-           amount: '',
-           orderId: ''
-         },
-        rules: {
-           amount:[
-             {
-               required: true,message:'不能为空',trigger: 'blur'
-             }
-           ],
-          orderId:[
-            {
-              required: true,message:'不能为空',trigger: 'blur'
-            }
-          ]
+          indexDesc:{1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七'},
+          rules: {
+            value1: [
+                {
+                    required: true, message: '不能为空', trigger: 'blur'
+                }
+            ],
+                value2: [
+                {
+                    required: true, message: '不能为空', trigger: 'blur'
+                }
+            ]
         }
       }
     },
@@ -72,17 +74,15 @@
         document.body.removeChild(textArea);
       },
       handleAvatarSuccess(res, file, type) {
-        console.log(type)
-//            this.ruleForm.positive = URL.createObjectURL(file.raw);
+          this.ruleForm.picture1 = res.msg;
       },
       goPrev(){
-        this.$emit('submit', 6);
+          this.$emit('submit', this.steps[this.steps.indexOf(8)-1]);
       },
       submitForm(formName) {
         this.$refs[formName].validate((valid)=>{
           if(valid){
-            console.log(this.ruleForm)
-            // this.$emit('submit', 8);
+             this.$emit('submit', 9);
           }else{
             return false;
           }
@@ -121,8 +121,12 @@
         position: relative;
         overflow: hidden;
         width: 400px;
-        height: 200px;
+        min-height: 200px;
         float: left;
+        img{
+            width: 400px;
+            min-height: 200px;
+        }
     }
     .avatar-uploader-icon {
         font-size: 28px;

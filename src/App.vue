@@ -22,16 +22,6 @@
       // Loading,
     },
     async created(){
-      const result = await this.$API.request(this.$API.getUserInfo, 'POST');
-      if (result && result.success) {
-        this.userName = result.data.userName;
-      } else {
-        if (result.code === 'OVERTIME') {
-          this.$router.push('/login')
-        } else {
-          this.$message.info(result.msg)
-        }
-      }
       const path = this.$route.path.substr(1);
       const hideHeaderList=['login','register','forgetPassword','forgetPayPassword','userDetail'];
       if(hideHeaderList.indexOf(path)>-1){

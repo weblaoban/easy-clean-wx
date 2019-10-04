@@ -1,5 +1,5 @@
 <template>
-    <div class="userInfo" v-loading="loading">
+    <div class="userInfo">
         <div class="head">
             <div class="container headInfo">
                 <div class="img">
@@ -36,14 +36,15 @@
                     <em class="fail" v-if="authInfo.phoneAuth === 0 || authInfo.phoneAuth === 2"></em>
                 </li>
                 <li>
-                    <router-link to="/userInfo/cardAuth" v-if="authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3">银行卡认证</router-link>
+                    <router-link to="/userInfo/cardAuth" v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3) &&(authInfo.identityAuth === 1)">银行卡认证</router-link>
+                    <a v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3) &&(authInfo.identityAuth !== 1)" @click="()=>{this.$message.info('请先完成实名认证')}">银行卡认证</a>
                     <a v-if="authInfo.bankAuth === 1">银行卡认证</a>
                     <em class="suess" v-if="authInfo.bankAuth === 1"></em>
                     <em class="fail" v-if="authInfo.bankAuth === 0 || authInfo.bankAuth === 2"></em>
                     <em class="checking" v-if="authInfo.bankAuth === 3"></em>
                 </li>
                 <li>
-                    <router-link to="/" v-if="authInfo.ruleAuth === 0 || authInfo.ruleAuth === 2">平台规则考试认证</router-link>
+                    <router-link to="/userInfo/ruleAuth" v-if="authInfo.ruleAuth === 0 || authInfo.ruleAuth === 2">平台规则考试认证</router-link>
                     <a v-if="authInfo.ruleAuth === 1">平台规则考试认证</a>
                     <em class="suess" v-if="authInfo.ruleAuth === 1"></em>
                     <em class="fail" v-if="authInfo.ruleAuth === 0 || authInfo.ruleAuth === 2"></em>

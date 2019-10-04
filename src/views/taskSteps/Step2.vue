@@ -1,19 +1,19 @@
 <template>
    <div class="step">
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
-           <h4>二、 查找目标宝贝</h4>
-           <p>关键词：取自：任务发布时录入的关键词</p>
-           <el-button type="primary" @click="copyTextToClipboard('关键词')">复制关键词</el-button>
-           <p>2、目标宝贝店铺的旺旺号：中国****舰店 （显示绑定名称的前后两位，其他****代替）</p>
+           <h4>{{taskRequire.isThreeShops?'二':'一'}}、 查找目标宝贝</h4>
+           <p>1.关键词：{{taskRequire.searchTerms}}</p>
+           <el-button type="primary" @click="copyTextToClipboard(taskRequire.searchTerms)">复制关键词</el-button>
+           <p>2、目标宝贝店铺的旺旺号：{{taskRequire.shopName}}</p>
            <p>3、参考宝贝主图</p>
-           <img src="../../assets/images/head.png" alt="">
+           <img :src="taskRequire.picture1" alt="">
            <p>4、请录入已正确找到的商家旺旺号名称</p>
-           <el-form-item prop="name">
-               <el-input placeholder="用户名" v-model="ruleForm.name"></el-input>
+           <el-form-item prop="value1">
+               <el-input placeholder="用户名" v-model="ruleForm.value1"></el-input>
            </el-form-item>
-           <p>下单剩余时间：<span>00:59：59</span>（一小时倒计时）</p>
+           <p v-if="this.timeDown(taskRequire)>0">下单剩余时间：<span v-text="taskRequire.timeDown">00:59：59</span>（一小时倒计时）</p>
            <div class="button">
-               <el-button type="primary" @click="goPrev">上一步</el-button>
+               <el-button type="primary" @click="goPrev" v-if="steps.indexOf(2)>0">上一步</el-button>
                <el-button type="primary" style="margin-left: 40px;" @click="submitForm('ruleForm')">下一步</el-button>
            </div>
        </el-form>
@@ -22,13 +22,15 @@
 <script>
   export default {
     name: 'startTask',
+      props: ['taskRequire','steps', 'ruleForm'],
     data(){
       return{
-         ruleForm: {
-           name: '',
-           top: ''
-         },
-        rules: {}
+        rules: {
+            value1: [
+                {
+                    required: true, message: '不能为空', trigger: 'blur'
+                }
+            ],}
       }
     },
     methods: {
@@ -52,23 +54,41 @@
         }
         document.body.removeChild(textArea);
       },
-      handleAvatarSuccess(res, file, type) {
-        console.log(type)
-//            this.ruleForm.positive = URL.createObjectURL(file.raw);
-      },
       goPrev(){
-        this.$emit('submit', 1);
+          this.$emit('submit', this.steps[this.steps.indexOf(2)-1]);
       },
       submitForm(formName) {
         this.$refs[formName].validate((valid)=>{
           if(valid){
-            console.log(this.ruleForm)
-            this.$emit('submit', 3);
+            if(this.ruleForm.value1===this.taskRequire.shopName){
+                this.$emit('submit', this.steps[this.steps.indexOf(2)+1]);
+            } else {
+                this.$message.info('输入的旺旺号有误')
+            }
           }else{
             return false;
           }
         })
-      }
+      },
+        timeDown(row){
+            let total = row.times;
+            if(total){
+                let result;
+                this.int = setInterval(()=>{
+                    const s = (total%60) < 10 ? ('0' + total%60) : total%60;
+                    const h = total/3600 < 10 ? ('0' + parseInt(total/3600)) : parseInt(total/3600);
+                    const m = (total-h*3600)/60 < 10 ? ('0' + parseInt((total-h*3600)/60)) : parseInt((total-h*3600)/60);
+                    result = h + ' : ' + m + ' : ' + s;
+                    total--;
+                    row.timeDown = result;
+                    row.times = total;
+                    this.taskRequire = row;
+                }, 1000)
+                if(total < 0) clearInterval(this.int);
+                return result;
+            }
+            return 0;
+        }
     },
   }
 </script>
@@ -85,8 +105,8 @@
             margin-bottom: 10px;
         }
         img{
-            width: 200px;
-            height: 200px;
+            width: 100%;
+            /*height: 200px;*/
             display: block;
             margin: 20px 0;
         }
@@ -95,7 +115,8 @@
             margin-top: 20px;
         }
         .el-button{
-            padding: 12px 20px;
+            min-width: 200px;
+            padding: 20px 20px;
         }
     }
     .el-upload {
@@ -105,8 +126,12 @@
         position: relative;
         overflow: hidden;
         width: 400px;
-        height: 200px;
+        min-height: 200px;
         float: left;
+        img{
+            width: 400px;
+            min-height: 200px;
+        }
     }
     .avatar-uploader-icon {
         font-size: 28px;
