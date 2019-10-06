@@ -6,7 +6,7 @@
         </div>
         <div class="item">
             <span class="label">所在地：</span>
-            <span class="content">{{info.province}}&nbsp;&nbsp;&nbsp;&nbsp;{{info.city}}</span>
+            <span class="content">{{province}}&nbsp;&nbsp;&nbsp;&nbsp;{{city}}</span>
         </div>
         <div class="item">
             <span class="label">电子邮箱：</span>
@@ -39,7 +39,9 @@
     data(){
       return {
         info: {
-          userWithdrawalBankCard: {}}
+          userWithdrawalBankCard: {}},
+          province: '',
+          city: '',
       }
     },
     async created(){
@@ -48,6 +50,16 @@
         const data = result.data;
         const sexDesc = data.sex===1?'先生':'女士';
         this.info = {...data,sex: sexDesc}
+          if(province.length){
+              this.province = province[0].name;
+              const cities = province[0].cityList;
+              const city = cities.filter(function(item){
+                  return item.code === data.city
+              });
+              if(city.length){
+                  this.city = city[0].name;
+              }
+          }
       }
     }
   }
