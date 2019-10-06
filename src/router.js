@@ -175,7 +175,7 @@ const router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => {
-  const userInfo = sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')):{};
+  const userInfo = localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')):{};
     if (to.path === '/login') {
         next()
     } else if(to.path==='/register'){

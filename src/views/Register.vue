@@ -198,6 +198,8 @@
                 setTimeout(function(){
                   that.$router.push('/login')
                 }, 1000)
+              } else{
+                  this.$message.info(result.msg)
               }
             } else {
               return false;

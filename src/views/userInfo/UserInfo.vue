@@ -6,7 +6,7 @@
                     <img src="../../assets/images/head.png" alt="">
                 </div>
                 <p><span v-text="info.userName ? info.userName + '，' : ''"></span>欢迎回来</p>
-                <a @click="logOut">退出</a>
+                <a @click="logOut" v-loading="logoutLoading">退出</a>
             </div>
             <div class="finance">
                 <p>
@@ -66,6 +66,7 @@
       name: 'userInfo',
       data(){
         return {
+            logoutLoading: false,
           loading: false,
           info: {userAccount: {}},
           authInfo: {}
@@ -90,8 +91,13 @@
         }
       },
       methods:{
-        logOut(){
-
+        async logOut(){
+            this.logoutLoading = true;
+            const result = await this.$API.request(this.$API.logout,'POST');
+            this.logoutLoading = false;
+            if(!result.success){
+                this.$message.info(result.msg)
+            }
         }
       }
     }

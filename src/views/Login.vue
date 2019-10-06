@@ -50,7 +50,7 @@
             const result = await this.$API.request(this.$API.login, 'POST', {...this.ruleForm});
             this.loading = false;
             if (result && result.success) {
-              sessionStorage.setItem('userInfo', JSON.stringify(result.data));
+              localStorage.setItem('userInfo', JSON.stringify(result.data));
               this.$router.push('/')
             } else {
               this.$message.error(result.msg)

@@ -64,7 +64,7 @@
           getListLoading: false,
         inviteList: [],
           linkList:'',
-          userInfo: sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')):{}
+          userInfo: localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')):{}
       }
     },
       async created(){

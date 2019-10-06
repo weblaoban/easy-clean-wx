@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
 axios.interceptors.request.use(function (config) {
     config.withCredentials = true
     config.timeout = 12000
-    let token = sessionStorage.getItem('userInfo')?JSON.parse(sessionStorage.getItem('userInfo')).token:'';
+    let token = localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')).token:'';
     if (token) {
         config.headers = {
             'token': token,
@@ -33,7 +33,7 @@ axios.interceptors.response.use(function (response) {
         switch (error.response.status) {
             case 401:
                 // 返回 401 清除token信息并跳转到登录页面
-                sessionStorage.removeItem('userInfo')
+                localStorage.removeItem('userInfo')
                 router.replace({
                     path: 'login',
                     query: {redirect: router.currentRoute.fullPath}
@@ -82,8 +82,8 @@ function request(url, method = 'GET', formData, isUpload) {
           if (response.status === 204) {
               return response.statusText;
           }
-          if (response.data && response.data.code === 'OVERTIME' || response.code === 'OVERTIME') {
-              sessionStorage.removeItem('userInfo');
+          if (response.data && (response.data.code === 'OVERTIME' || response.code === 'OVERTIME' || response.data.msg==='token is invalid,please login again!'|| response.msg==='token is invalid,please login again!')) {
+              localStorage.removeItem('userInfo');
               const location = window.location.href;
               if(location.indexOf('login')>-1|| location.indexOf('register')>-1||location.indexOf('forgetPassword')>-1) {
 
@@ -99,7 +99,7 @@ function request(url, method = 'GET', formData, isUpload) {
           store.dispatch('showLoading', false)
           const status = e.httpStatus;
           if (status === 401) {
-              sessionStorage.removeItem('userInfo');
+              localStorage.removeItem('userInfo');
               window.location.href = `/login?redirect=${e.url}`;
           } else {
               Message({

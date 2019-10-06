@@ -89,8 +89,8 @@
         finance: {},
         ruleForm: {
           idNumber: '',
-          positivePhoto: '',
-          backPhoto: ''
+            bankName: '',
+            cardNumber: ''
         },
         withdrawForm: {
           money: '',
@@ -179,7 +179,7 @@
           this.$refs[formName].validate(async (valid) => {
             if (valid) {
               this.withdrawLoading = true;
-              const result = await this.$API.request(this.$API.withdraw, 'POST', {...this.withdrawForm});
+              const result = await this.$API.request(this.$API.withdraw, 'POST', {...this.withdrawForm,money: (this.withdrawForm.money*1).toFixed(2)});
               this.withdrawLoading = false;
               if (result && result.success) {
                 this.getUserInfo();
@@ -198,6 +198,7 @@
              const result = await this.$API.request(this.$API.bankAccountBind, 'POST', {...this.ruleForm});
              this.loading = false;
              if (result && result.success) {
+                 this.getUserInfo();
                this.getWithdrawCard();
              } else {
                this.$message.error(result.msg)

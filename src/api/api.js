@@ -1,6 +1,7 @@
 const host = '/api/'
 const url = {
     login: 'user/login',              //登录接口
+    logout: 'user/logout', //退出登录
     register:'user/register' ,//注册
     getProvince: 'common/province',
     getCities: 'common/city',
