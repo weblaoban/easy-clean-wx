@@ -9,11 +9,13 @@
             </el-form-item>
             <el-form-item prop="positivePhoto">
                 <el-upload
+                        v-loading="avatarLoading"
                         :disabled="authState===3"
                         class="avatar-uploader"
                         action="/api/attachment/upload"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
+                        :on-progress="handelAvatarProgress"
                         accept="image/png,image/gif,image/jpg,image/jpeg"
                         :data="{type:'REAL_NAME_CHART'}"
                         name="file"
@@ -51,6 +53,7 @@
     name: 'realName',
     data(){
       return {
+          avatarLoading: false,
         loading: false,
         authState: 0,
         name:'',
@@ -112,7 +115,11 @@
           }
         })
       },
+        handelAvatarProgress(){
+          this.avatarLoading = true
+        },
       handleAvatarSuccess(res) {
+          this.avatarLoading = false;
         this.ruleForm.positivePhoto = res.msg;
       },
       handleOtherSuccess(res) {

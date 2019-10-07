@@ -182,7 +182,12 @@
               const result = await this.$API.request(this.$API.withdraw, 'POST', {...this.withdrawForm,money: (this.withdrawForm.money*1).toFixed(2)});
               this.withdrawLoading = false;
               if (result && result.success) {
-                this.getUserInfo();
+                  this.$message.success('操作成功');
+                  const that = this;
+                  this.$refs[formName].resetFields();
+                  setTimeout(function(){
+                      that.getUserInfo();
+                  })
               } else {
                 this.$message.error(result.msg)
               }
@@ -198,8 +203,13 @@
              const result = await this.$API.request(this.$API.bankAccountBind, 'POST', {...this.ruleForm});
              this.loading = false;
              if (result && result.success) {
-                 this.getUserInfo();
-               this.getWithdrawCard();
+                 this.$message.success('操作成功');
+                 const that = this;
+                 this.$refs[formName].resetFields();
+                 setTimeout(function(){
+                     this.getUserInfo();
+                     this.getWithdrawCard();
+                 })
              } else {
                this.$message.error(result.msg)
              }

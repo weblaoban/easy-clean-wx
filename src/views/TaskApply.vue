@@ -194,7 +194,7 @@
     methods: {
       async getBuyerList() {
         this.loadingGetBuyer = true;
-        const result = await this.$API.request(this.$API.buyNumberList, 'POST');
+        const result = await this.$API.request(this.$API.buyNumberList, 'POST', {status: 1});
         this.loadingGetBuyer = false;
         if (result && result.success) {
           this.buyerList = result.data.filter(function (item) {

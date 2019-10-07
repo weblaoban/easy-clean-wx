@@ -1,9 +1,9 @@
 <template>
     <div class="rule container">
         <el-form :rules="rules" ref="ruleForm" :model="ruleForm" labelWidth="100%" label-position="top" hideRequiredAsterisk="">
-            <el-form-item :label="item.title" :prop="(index+1)+''" v-for="(item, index) in questions">
+            <el-form-item :label="item.title" :prop="(index+1)+''" v-for="(item, index) in questions" :key="index">
                 <el-radio-group v-model="ruleForm[(index+1)+'']">
-                    <el-radio v-for="answer in item.options" :label="answer.value" :value="answer.value">{{answer.desc}}</el-radio>
+                    <el-radio :key="index+answer.value" v-for="answer in item.options" :label="answer.value" :value="answer.value">{{answer.desc}}</el-radio>
                 </el-radio-group>
             </el-form-item>
             <el-form-item>

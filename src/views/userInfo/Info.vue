@@ -20,16 +20,17 @@
             <span class="label">QQ号：</span>
             <span class="content">{{info.qq}}</span>
         </div>
-        <div class="item">
+        <div class="item" v-if="info.userWithdrawalBankCard">
             <span class="label">收款银行</span>
+            <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.bankName : ''}}</span>
         </div>
-        <div class="item">
+        <div class="item" v-if="info.userWithdrawalBankCard">
             <span class="label">收款银行卡号：</span>
             <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.cardNumber : ''}}</span>
         </div>
-        <div class="item">
+        <div class="item" v-if="info.userWithdrawalBankCard">
             <span class="label">开户行：</span>
-            <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.bankName : ''}} {{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.openBank : ''}}</span>
+            <span class="content">{{info.userWithdrawalBankCard ? info.userWithdrawalBankCard.openBank : ''}}</span>
         </div>
     </div>
 </template>

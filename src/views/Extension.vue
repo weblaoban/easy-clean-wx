@@ -173,6 +173,7 @@
                 display: flex;
                 justify-content: space-between;
                 line-height: 30px;
+                min-height: 80px;
                 span{
                     line-height: 30px;
                     flex: 1;

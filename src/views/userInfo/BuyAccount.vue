@@ -5,7 +5,7 @@
                 <span>买号</span><span>上一次使用</span><span>信用</span><span>审核状态</span><span>操作</span>
             </li>
             <li v-for="item in buyerList" :key="item.id">
-                <span v-text="item.userAccount"></span><span v-text="item.lastDate ? item.lastDate : '未使用'"></span><span v-text="item.credit"></span><span v-text="status[item.status]"></span><span><a @click="removeBuyer(item)" v-loading="deleting">删除</a></span>
+                <span v-text="item.userAccount"></span><span v-text="item.lastDate ? item.lastDate : '未使用'"></span><span v-text="credit[item.credit]"></span><span v-text="status[item.status]"></span><span><a @click="removeBuyer(item)" v-loading="deleting">删除</a></span>
             </li>
         </ul>
         <p class="tip">请注意：</p>
@@ -22,6 +22,9 @@
         status : {
           0:'待通过',1:'已通过',2:'拒绝',
         },
+          credit: {
+              3:'3心',4:'4心',5:'5心',6:'1钻',7:'2钻',8:'3钻',9:'4钻',10:'5钻',11:'冠级'
+          },
         deleting: false,
         buyerList: [],
       }
