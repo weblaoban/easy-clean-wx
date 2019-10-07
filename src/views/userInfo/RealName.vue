@@ -10,7 +10,6 @@
             <el-form-item prop="positivePhoto">
                 <el-upload
                         v-loading="avatarLoading"
-                        :disabled="authState===3"
                         class="avatar-uploader"
                         action="/api/attachment/upload"
                         :show-file-list="false"
@@ -19,6 +18,7 @@
                         accept="image/png,image/gif,image/jpg,image/jpeg"
                         :data="{type:'REAL_NAME_CHART'}"
                         name="file"
+                        :before-upload="validateSize"
                 >
                     <img v-if="ruleForm.positivePhoto" :src="ruleForm.positivePhoto" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -27,13 +27,14 @@
             </el-form-item>
             <el-form-item prop="backPhoto">
                 <el-upload
-                        :disabled="authState===3"
+                        v-loading="backLoading"
                         class="avatar-uploader"
                         action="/api/attachment/upload"
                         :show-file-list="false"
                         :data="{type:'REAL_NAME_CHART'}"
                         name="file"
                         accept="image/png,image/gif,image/jpg,image/jpeg"
+                        :on-progress="handelOtherProgress"
                         :on-success="handleOtherSuccess">
                     <img v-if="ruleForm.backPhoto" :src="ruleForm.backPhoto" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -53,6 +54,7 @@
     name: 'realName',
     data(){
       return {
+          backLoading: false,
           avatarLoading: false,
         loading: false,
         authState: 0,
@@ -115,14 +117,21 @@
           }
         })
       },
+        validateSize(file){
+          console.log(file)
+        },
         handelAvatarProgress(){
           this.avatarLoading = true
+        },
+        handelOtherProgress(){
+            this.backLoading = true
         },
       handleAvatarSuccess(res) {
           this.avatarLoading = false;
         this.ruleForm.positivePhoto = res.msg;
       },
       handleOtherSuccess(res) {
+          this.backLoading = false
         this.ruleForm.backPhoto = res.msg;
       },
     }
