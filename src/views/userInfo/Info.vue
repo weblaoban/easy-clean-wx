@@ -35,14 +35,16 @@
     </div>
 </template>
 <script>
+    import provinces from '../../utils/city.json';
   export default {
     name: 'info',
     data(){
       return {
+        province: '',
+        city: '',
         info: {
-          userWithdrawalBankCard: {}},
-          province: '',
-          city: '',
+          userWithdrawalBankCard: {}
+          },
       }
     },
     async created(){
@@ -51,6 +53,9 @@
         const data = result.data;
         const sexDesc = data.sex===1?'先生':'女士';
         this.info = {...data,sex: sexDesc}
+        const province = provinces.filter(function(item){
+          return item.code === data.province
+        });
           if(province.length){
               this.province = province[0].name;
               const cities = province[0].cityList;

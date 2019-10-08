@@ -98,7 +98,7 @@
                         <div class="bottom">
                             <div class="button">
                                 <el-button type="primary"
-                                           @click="handelApply(item.taskId)">
+                                           @click="handelApply(item.id, item.taskId)">
                                     申请
                                 </el-button>
                             </div>
@@ -176,6 +176,7 @@
         taskList: [],
         buyerList: [],
         id: 0,
+        taskId: 0,
         tips: '',
           authInfo: {},
           nextTask: {}
@@ -232,7 +233,7 @@
         this.loadingCheckBuyer = true;
         const result = await this.$API.request(this.$API.checkBuyer, 'POST', {
           buyNumberId: value,
-          taskId: this.id
+          taskId: this.taskId
         });
         this.loadingCheckBuyer = false;
         if (result && !result.success) {
@@ -242,7 +243,8 @@
           this.buyerAccount = value
         }
       },
-      handelApply(id) {
+      handelApply(id, taskId) {
+        this.taskId = taskId;
         this.id = id;
         this.dialogFormVisible = true;
       },

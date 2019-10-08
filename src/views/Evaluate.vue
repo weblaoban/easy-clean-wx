@@ -6,6 +6,9 @@
             <p v-if="evaluateRequire.isSlideShow">2、评价截图上传（如果任务发布时选取了晒图要求）</p>
             <el-form-item v-if="evaluateRequire.isSlideShow" prop="screen" labelWidth="0">
                 <el-upload
+                        v-loading="uploadLoading"
+                        :on-progress="handelAvatarProgress"
+                        :before-upload="validateSize"
                         class="avatar-uploader"
                         action="/api/attachment/upload"
                         :show-file-list="false"
@@ -28,6 +31,7 @@
         name: 'startTask',
         data(){
             return{
+              uploadLoading: false,
                 getingRequire: false,
                 loading: false,
                 screen: '',
@@ -66,11 +70,22 @@
                 document.body.removeChild(textArea);
             },
             handleAvatarSuccess(res) {
+              this.uploadLoading = false
                 this.ruleForm.screen = res.msg;
             },
             goPrev(){
                 this.$emit('submit', 6);
             },
+          validateSize(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isLt2M) {
+              this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isLt2M;
+          },
+          handelAvatarProgress() {
+            this.uploadLoading = true
+          },
             async submitForm() {
                 if(this.evaluateRequire.isSlideShow && !this.screen){
                     this.$message.info('请上传截图');

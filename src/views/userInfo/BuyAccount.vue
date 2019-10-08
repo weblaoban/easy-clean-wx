@@ -34,7 +34,7 @@
     },
     methods: {
       async getList(){
-        const result = await this.$API.request(this.$API.buyNumberList,'POST');
+        const result = await this.$API.request(this.$API.buyNumberList,'POST',{status: null});
         if(result && result.success){
           this.buyerList = result.data;
         }else{

@@ -64,12 +64,15 @@
                 <h4><span>1、手机淘宝-我的淘宝-顶部</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotTop" labelWidth="0">
                     <el-upload
+                            v-loading="uploadLoading"
+                            :on-progress="handelAvatarProgress"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotTop')}">
                         <img v-if="buyerRequire.screenshotTop" :src="buyerRequire.screenshotTop" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -78,12 +81,15 @@
                 <h4><span>2、手机淘宝-我的淘宝-底部</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotBottom" labelWidth="0">
                     <el-upload
+                            v-loading="uploadLoading"
+                            :on-progress="handelAvatarProgress"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotBottom')}">
                         <img v-if="buyerRequire.screenshotBottom" :src="buyerRequire.screenshotBottom" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -92,12 +98,15 @@
                 <h4><span>3、手机淘宝-收货地址</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotAddress" labelWidth="0">
                     <el-upload
+                            v-loading="uploadLoading"
+                            :on-progress="handelAvatarProgress"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
+                            :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotAddress')}">
                         <img v-if="buyerRequire.screenshotAddress" :src="buyerRequire.screenshotAddress" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -106,6 +115,9 @@
                 <h4><span>4、淘宝截图-我的</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotMy" labelWidth="0">
                     <el-upload
+                            v-loading="uploadLoading"
+                            :on-progress="handelAvatarProgress"
+                            :before-upload="validateSize"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
@@ -132,6 +144,7 @@
     name: 'buyerRequire',
     data() {
       return {
+        uploadLoading: false,
         loading: false,
         taskType,
         buyTypes,
@@ -249,10 +262,20 @@
       cityChange(city){
         this.areas=[];
         const areas = this.cities.find(function(item){return item.code===city})?this.cities.find(function(item){return item.code===city}).areaList : []
-        console.log(areas)
         this.areas = areas;
       },
+      validateSize(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isLt2M;
+      },
+      handelAvatarProgress() {
+        this.uploadLoading = true
+      },
         handleAvatarSuccess(res, type) {
+          this.uploadLoading = false
           if(res && res.success)
            this.buyerRequire[type] = res.msg;
         },

@@ -13,6 +13,9 @@
             <p v-if="taskRequire.isScreenshot">5、截图上传</p>
             <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0" v-for="item in 3">
                 <el-upload
+                        v-loading="uploadLoading"
+                        :on-progress="handelAvatarProgress"
+                        :before-upload="validateSize"
                         class="avatar-uploader"
                         action="/api/attachment/upload"
                         :show-file-list="false"
@@ -37,6 +40,7 @@
         props: ['taskRequire', 'ruleForm'],
         data() {
             return {
+              uploadLoading: false,
                 threeShops: {
                     0: '不需要', 1: '货比一家', 2: '货比两家', 3: '货比三家 '
                 },
@@ -60,6 +64,16 @@
             }
         },
         methods: {
+          validateSize(file) {
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isLt2M) {
+              this.$message.error('上传头像图片大小不能超过 2MB!');
+            }
+            return isLt2M;
+          },
+          handelAvatarProgress() {
+            this.uploadLoading = true
+          },
             copyTextToClipboard(text) {
                 const textArea = document.createElement('textarea');
                 textArea.style.position = 'fixed';
@@ -81,9 +95,8 @@
                 document.body.removeChild(textArea);
             },
             handleAvatarSuccess(res, file,type) {
+              this.uploadLoading = false
                 this.ruleForm.isThreeShops[type]=res.msg;
-                console.log(res.msg)
-                console.log(this.ruleForm)
             },
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {

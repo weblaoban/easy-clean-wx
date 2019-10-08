@@ -6,6 +6,9 @@
            <p v-if="taskRequire.isScreenshot">2、截图上传（如果任务发布时选取了要求）</p>
            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
+                       v-loading="uploadLoading"
+                       :on-progress="handelAvatarProgress"
+                       :before-upload="validateSize"
                        class="avatar-uploader"
                        action="/api/attachment/upload"
                        :show-file-list="false"
@@ -30,6 +33,7 @@
       props: ['taskRequire','steps', 'ruleForm'],
     data(){
       return{
+        uploadLoading: false,
           indexDesc:{1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七'},
         rules: {
            value1:[
@@ -41,6 +45,16 @@
       }
     },
     methods: {
+      validateSize(file) {
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isLt2M;
+      },
+      handelAvatarProgress() {
+        this.uploadLoading = true
+      },
       copyTextToClipboard(text) {
         const textArea = document.createElement('textarea');
         textArea.style.position = 'fixed';
@@ -61,7 +75,8 @@
         }
         document.body.removeChild(textArea);
       },
-      handleAvatarSuccess(res, file, type) {
+      handleAvatarSuccess(res) {
+        this.uploadLoading = false
           this.ruleForm.picture1 = res.msg;
       },
       goPrev(){
