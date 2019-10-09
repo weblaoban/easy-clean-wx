@@ -7,7 +7,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">注册</el-button>
+                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">确认</el-button>
             </el-form-item>
         </el-form>
     </div>

@@ -4,9 +4,6 @@
             <el-form-item prop="name">
                 <el-input placeholder="王平（注册时填写的真实姓名，不可修改）" v-model="name" disabled></el-input>
             </el-form-item>
-            <el-form-item prop="idNumber">
-                <el-input placeholder="请输入您的身份证号码" v-model="ruleForm.idNumber"></el-input>
-            </el-form-item>
             <el-form-item prop="bankName">
                 <el-input placeholder="请输入银行名称" v-model="ruleForm.bankName"></el-input>
             </el-form-item>
@@ -28,16 +25,10 @@
         loading: false,
         name:'',
         ruleForm: {
-          idNumber: '',
           cardNumber: '',
           bankName: ''
         },
         rules: {
-          idNumber: [
-            {
-              required: true,message: '不能为空',trigger: 'blur'
-            }
-          ],
           cardNumber: [
             {
               required: true,message: '不能为空',trigger: 'blur'
