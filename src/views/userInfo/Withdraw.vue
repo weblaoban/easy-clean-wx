@@ -70,10 +70,9 @@
             </el-form-item>
         </el-form>
         <p style="margin-top: 20px">账户说明</p>
-        <p>1、单次提现最小金额20元</p>
+        <p>1、单次提现最小金额100元</p>
         <p>2、单次提现最大金额5000元</p>
-        <p>3、提现费率2元/笔</p>
-        <p>4、提现到账时间：48小时内</p>
+        <p>3、提现到账时间：48小时内</p>
     </div>
 </template>
 <script>
@@ -224,8 +223,8 @@
           callback(new Error('不能为空'));
         } else if (typeof value !== 'number') {
           callback(new Error('请输入正确的金额'));
-        } else if(value<20){
-          callback(new Error('单次提现最小金额20元'));
+        } else if(value<100){
+          callback(new Error('提现金额不低于100元'));
         } else if(value>5000){
           callback(new Error('单次提现最大金额5000元'));
         } else if(value>(this.finance.amount-this.finance.freeze)){

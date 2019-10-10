@@ -17,7 +17,7 @@
                         name="file"
                         accept="image/png,image/gif,image/jpg,image/jpeg"
                         :on-success="handleAvatarSuccess">
-                    <img v-if="ruleForm.screen" :src="ruleForm.screen" class="avatar">
+                    <img v-if="screen" :src="creen" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
@@ -32,9 +32,6 @@
         name: 'startTask',
         data(){
             return{
-              ruleForm:{
-                screen: '',
-              },
               uploadLoading: false,
                 getingRequire: false,
                 loading: false,
@@ -53,29 +50,9 @@
             }
         },
         methods: {
-            copyTextToClipboard(text) {
-                const textArea = document.createElement('textarea');
-                textArea.style.position = 'fixed';
-                textArea.style.top = 0;
-                textArea.style.left = 0;
-                textArea.style.width = '2em';
-                textArea.style.height = '2em';
-                textArea.style.padding = 0;
-                textArea.style.border = 'none';
-                textArea.style.outline = 'none';
-                textArea.style.boxShadow = 'none';
-                textArea.style.background = 'transparent';
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                if (document.execCommand('copy')) {
-                    this.$message.success('复制成功');
-                }
-                document.body.removeChild(textArea);
-            },
             handleAvatarSuccess(res) {
               this.uploadLoading = false
-                this.ruleForm.screen = res.msg;
+                this.screen = res.msg;
             },
             goPrev(){
                 this.$emit('submit', 6);
