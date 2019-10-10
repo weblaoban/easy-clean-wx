@@ -97,6 +97,8 @@
             this.logoutLoading = false;
             if(!result.success){
                 this.$message.info(result.msg)
+            } else {
+              this.$router.push('/login')
             }
         }
       }

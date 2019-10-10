@@ -118,6 +118,7 @@
 </script>
 <style lang="scss">
     .myTask {
+        padding-bottom: 100px;
         font-size: 24px;
         .el-tabs__nav-wrap{
             width: 100%;

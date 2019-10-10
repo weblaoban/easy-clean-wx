@@ -4,9 +4,10 @@
             <p>1、完成评价以及买家秀</p>
             <p v-if="evaluateRequire.isDesignatedEvaluation">指定评价：<span v-text="evaluateRequire.evaluationContent"></span></p>
             <p v-if="evaluateRequire.isSlideShow">2、评价截图上传（如果任务发布时选取了晒图要求）</p>
-            <el-form-item v-if="evaluateRequire.isSlideShow" prop="screen" labelWidth="0">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture" alt="">
+            <el-form-item v-if="evaluateRequire.isSlideShow" prop="screen" labelWidth="0" v-loading="uploadLoading">
                 <el-upload
-                        v-loading="uploadLoading"
+
                         :on-progress="handelAvatarProgress"
                         :before-upload="validateSize"
                         class="avatar-uploader"
@@ -16,7 +17,7 @@
                         name="file"
                         accept="image/png,image/gif,image/jpg,image/jpeg"
                         :on-success="handleAvatarSuccess">
-                    <img v-if="ruleForm.top" :src="ruleForm.top" class="avatar">
+                    <img v-if="ruleForm.screen" :src="ruleForm.screen" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
@@ -31,6 +32,9 @@
         name: 'startTask',
         data(){
             return{
+              ruleForm:{
+                screen: '',
+              },
               uploadLoading: false,
                 getingRequire: false,
                 loading: false,
@@ -141,8 +145,12 @@
             position: relative;
             overflow: hidden;
             width: 100%;
-            height: 200px;
+            min-height: 200px;
             float: left;
+            img{
+                width: 100%;
+                min-height: 200px;
+            }
         }
         .avatar-uploader-icon {
             font-size: 28px;

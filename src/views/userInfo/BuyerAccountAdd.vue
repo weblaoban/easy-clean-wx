@@ -64,8 +64,8 @@
                 <h4><span>1、手机淘宝-我的淘宝-顶部</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotTop" labelWidth="0">
                     <el-upload
-                            v-loading="uploadLoading"
-                            :on-progress="handelAvatarProgress"
+                            v-loading="uploadLoading1"
+                            :on-progress="handelAvatarProgress1"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
@@ -73,7 +73,7 @@
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
                             :before-upload="validateSize"
-                            :on-success="function(e){handleAvatarSuccess(e,'screenshotTop')}">
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotTop', 1)}">
                         <img v-if="buyerRequire.screenshotTop" :src="buyerRequire.screenshotTop" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -81,8 +81,8 @@
                 <h4><span>2、手机淘宝-我的淘宝-底部</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotBottom" labelWidth="0">
                     <el-upload
-                            v-loading="uploadLoading"
-                            :on-progress="handelAvatarProgress"
+                            v-loading="uploadLoading2"
+                            :on-progress="handelAvatarProgress2"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
@@ -90,7 +90,7 @@
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
                             :before-upload="validateSize"
-                            :on-success="function(e){handleAvatarSuccess(e,'screenshotBottom')}">
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotBottom', 2)}">
                         <img v-if="buyerRequire.screenshotBottom" :src="buyerRequire.screenshotBottom" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -98,8 +98,8 @@
                 <h4><span>3、手机淘宝-收货地址</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotAddress" labelWidth="0">
                     <el-upload
-                            v-loading="uploadLoading"
-                            :on-progress="handelAvatarProgress"
+                            v-loading="uploadLoading3"
+                            :on-progress="handelAvatarProgress3"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
                             :show-file-list="false"
@@ -107,7 +107,7 @@
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
                             :before-upload="validateSize"
-                            :on-success="function(e){handleAvatarSuccess(e,'screenshotAddress')}">
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotAddress', 3)}">
                         <img v-if="buyerRequire.screenshotAddress" :src="buyerRequire.screenshotAddress" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -115,8 +115,8 @@
                 <h4><span>4、淘宝截图-我的</span><a>截图示例</a></h4>
                 <el-form-item prop="screenshotMy" labelWidth="0">
                     <el-upload
-                            v-loading="uploadLoading"
-                            :on-progress="handelAvatarProgress"
+                            v-loading="uploadLoading4"
+                            :on-progress="handelAvatarProgress4"
                             :before-upload="validateSize"
                             class="avatar-uploader"
                             action="/api/attachment/upload"
@@ -124,7 +124,7 @@
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
                             accept="image/png,image/gif,image/jpg,image/jpeg"
-                            :on-success="function(e){handleAvatarSuccess(e,'screenshotMy')}">
+                            :on-success="function(e){handleAvatarSuccess(e,'screenshotMy', 4)}">
                         <img v-if="buyerRequire.screenshotMy" :src="buyerRequire.screenshotMy" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
@@ -144,7 +144,10 @@
     name: 'buyerRequire',
     data() {
       return {
-        uploadLoading: false,
+        uploadLoading1: false,
+        uploadLoading2: false,
+        uploadLoading3: false,
+        uploadLoading4: false,
         loading: false,
         taskType,
         buyTypes,
@@ -271,11 +274,20 @@
         }
         return isLt2M;
       },
-      handelAvatarProgress() {
-        this.uploadLoading = true
+      handelAvatarProgress1() {
+        this.uploadLoading1 = true
       },
-        handleAvatarSuccess(res, type) {
-          this.uploadLoading = false
+      handelAvatarProgress2() {
+        this.uploadLoading2 = true
+      },
+      handelAvatarProgress3() {
+        this.uploadLoading3 = true
+      },
+      handelAvatarProgress4() {
+        this.uploadLoading4 = true
+      },
+        handleAvatarSuccess(res, type, loadingKey) {
+          this['uploadLoading'+loadingKey] = false;
           if(res && res.success)
            this.buyerRequire[type] = res.msg;
         },

@@ -1,6 +1,6 @@
 module.exports={
     publicPath: process.env.NODE_ENV === "production" ? "./" : "/",
-  filenameHashing: false,
+  filenameHashing: true,
   css: {
     loaderOptions: {
       postcss: {
@@ -21,8 +21,8 @@ module.exports={
     port: '8089',
     proxy: {
       "/api":{
-        // target: "http://2689087bm6.qicp.vip:35338/",
-        target: "http://user.qst-test.cn/",
+        target: "http://2689087bm6.qicp.vip:35338/",
+        // target: "http://user.qst-test.cn/",
         changeOrigin: true
       }
     }

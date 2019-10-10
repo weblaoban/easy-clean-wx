@@ -135,11 +135,11 @@
         cursor: pointer;
         position: relative;
         overflow: hidden;
-        width: 400px;
+        width: 100%;
         min-height: 200px;
         float: left;
         img{
-            width: 400px;
+            width: 100%;
             min-height: 200px;
         }
     }
