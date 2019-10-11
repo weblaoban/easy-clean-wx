@@ -11,9 +11,9 @@
                                 <img :src="item.picture1" alt="">
                             </div>
                             <div class="desc">
-                                <p><span>任务编号：</span><span v-text="item.taskId"></span></p>
-                                <p><span v-text="status[item.status]">已审核</span></p>
-                                <p><span>宝贝价格：</span><span v-text="item.money"></span></p>
+                                <p style="width: 60%; text-align: left"><span>任务编号：</span><span v-text="item.taskNumber"></span></p>
+                                <p style="width: 40%"><span v-text="status[item.status]">已审核</span></p>
+                                <p style="text-align: left"><span>宝贝价格：</span><span v-text="item.money"></span></p>
                                 <p><span>佣金：</span><span v-text="item.userCommission"></span></p>
                             </div>
                         </div>
@@ -161,6 +161,8 @@
                             span{
                                 line-height: 60px;
                                 font-size: 30px;
+                                word-break: break-all;
+                                text-align: left;
                             }
                         }
                     }

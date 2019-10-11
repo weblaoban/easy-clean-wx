@@ -7,7 +7,7 @@
             <p>3、点击搜索粘贴指定的关键词【{{taskRequire.searchTerms}}】</p>
             <el-button type="primary" @click="copyTextToClipboard(taskRequire.searchTerms)">复制关键词</el-button>
             <p>4、请输入货比商品店铺名称</p>
-            <el-form-item :prop="'value'+item" v-for="item in 3">
+            <el-form-item :prop="'value'+item" v-for="item in 3" :key="item">
                 <el-input :placeholder="'商品店铺'+item" v-model="ruleForm.isThreeShops['value'+item]"></el-input>
             </el-form-item>
             <p v-if="taskRequire.isScreenshot">5、截图上传</p>
