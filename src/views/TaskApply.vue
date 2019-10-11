@@ -26,7 +26,7 @@
                                         v-text="item.money"></span>
                                 </p>
                                 <p><span>佣金：</span><span
-                                        v-text="item.commission || 0"></span>
+                                        v-text="item.userCommission || 0"></span>
                                 </p>
                             </div>
                         </div>
