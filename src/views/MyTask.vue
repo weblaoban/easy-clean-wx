@@ -1,6 +1,6 @@
 <template>
     <div class="myTask" v-loading="loading">
-        <el-tabs v-loading="loading" v-model="currentSection"
+        <el-tabs v-model="currentSection"
                  @tab-click="handleClick">
             <el-tab-pane v-for="item in taskType" :label="item.desc" :name="(item.id).toString()" :key="item.id"
                          :disabled="item.id!==1">
@@ -14,7 +14,7 @@
                                 <p><span>任务编号：</span><span v-text="item.taskId"></span></p>
                                 <p><span v-text="status[item.status]">已审核</span></p>
                                 <p><span>宝贝价格：</span><span v-text="item.money"></span></p>
-                                <p><span>佣金：</span><span v-text="item.commission"></span></p>
+                                <p><span>佣金：</span><span v-text="item.userCommission"></span></p>
                             </div>
                         </div>
                         <div class="bottom">
