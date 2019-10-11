@@ -2,7 +2,7 @@
     <div class="userInfo blackList container">
         <el-form :inline="true" :model="financeInfo"
                  ref="finance" class="demo-form-inline">
-            <el-form-item prop="category" label="类别："
+            <el-form-item style="width: 100%" prop="category" label="类别："
                           class="userName">
                 <el-select v-model="financeInfo.category"
                            placeholder="选择类别">
@@ -12,7 +12,7 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item>
+            <el-form-item style="width: 100%">
                 <el-button type="primary"
                            @click="submitForm('finance')" :loading="loading">搜索
                 </el-button>
@@ -27,18 +27,18 @@
                 <span>发生时间</span><span>类别</span><span>变动金额</span><span>账户余额</span>
             </li>
         </ul>
-        <div class="wrap dataLists" ref="bs0" v-loading="loading">
-            <div ref="wrap0" class="container" down="上拉加载" v-show="financeList.length">
-                <div class="listWraper" ref="listWraper">
-                <ul v-loading="loading" class="head">
-                    <li v-for="item in financeList" :key="item.id">
-                        <span v-text="item.createDate"></span><span v-text="item.category"></span><span
-                            v-text="item.income"></span><span v-text="item.balance"></span>
-                    </li>
-                </ul>
+            <div class="wrap dataLists" ref="bs0" v-loading="loading">
+                <div ref="wrap0" class="container" down="上拉加载" v-show="financeList.length">
+                    <div class="listWraper" ref="listWraper">
+                        <ul v-loading="loading" class="head">
+                            <li v-for="item in financeList" :key="item.id">
+                                <span v-text="item.createDate"></span><span v-text="item.category"></span><span
+                                    v-text="item.income || item.expend"></span><span v-text="item.balance"></span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 </template>
 
@@ -192,7 +192,8 @@
             overflow: hidden;
             padding: 0 20px;
             width: 100%;
-            position:absolute; top:330px;left:0; bottom:100px; z-index:0;
+            position:absolute; top:280px;left:0; bottom:100px; z-index:0;
+            background: #fff;
             .container {
                 position: relative;
                 padding-top: 0.2rem;
@@ -221,6 +222,12 @@
         }
         .el-form {
             text-align: left;
+            .el-form-item{
+                margin-bottom: 20px;
+            }
+            .el-button{
+                padding: 12px 20px;
+            }
         }
         .infinite-list {
             height: 300px;
