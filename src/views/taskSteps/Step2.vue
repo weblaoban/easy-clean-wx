@@ -4,10 +4,9 @@
            <h4>{{taskRequire.isThreeShops?'二':'一'}}、 查找目标宝贝</h4>
            <p>1.关键词：{{taskRequire.searchTerms}}</p>
            <el-button type="primary" @click="copyTextToClipboard(taskRequire.searchTerms)">复制关键词</el-button>
-           <p>2、目标宝贝店铺的旺旺号：{{taskRequire.shopName}}</p>
-           <p>3、参考宝贝主图</p>
+           <p>2、参考宝贝主图</p>
            <img :src="taskRequire.picture1" alt="">
-           <p>4、请录入已正确找到的商家旺旺号名称</p>
+           <p>3、请录入已正确找到的商家旺旺号名称</p>
            <el-form-item prop="value1">
                <el-input placeholder="用户名" v-model="ruleForm.value1"></el-input>
            </el-form-item>
