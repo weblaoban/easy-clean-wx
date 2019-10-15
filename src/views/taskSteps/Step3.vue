@@ -3,7 +3,7 @@
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
            <h4>{{indexDesc[(steps.indexOf(3)+1)]}}、 拍前聊天</h4>
            <p>1、与目标店家客服聊天，至少3问</p>
-           <p v-if="taskRequire.isScreenshot">2、截图上传（如果任务发布时选取了要求）</p>
+           <p v-if="taskRequire.isScreenshot">2、截图上传</p>
            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
                        v-loading="uploadLoading"

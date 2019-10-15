@@ -61,7 +61,7 @@
                 </el-form-item>
                 <el-divider />
                 <h3>上传该账号的淘宝截图</h3>
-                <h4><span>1、手机淘宝-我的淘宝-顶部</span><a>截图示例</a></h4>
+                <h4><span>1、手机淘宝-我的淘宝-顶部</span><a @click="showDialog(1)">截图示例</a></h4>
                 <el-form-item prop="screenshotTop" labelWidth="0">
                     <el-upload
                             v-loading="uploadLoading1"
@@ -78,7 +78,7 @@
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
-                <h4><span>2、手机淘宝-我的淘宝-底部</span><a>截图示例</a></h4>
+                <h4><span>2、手机淘宝-我的淘宝-底部</span><a @click="showDialog(2)">截图示例</a></h4>
                 <el-form-item prop="screenshotBottom" labelWidth="0">
                     <el-upload
                             v-loading="uploadLoading2"
@@ -95,7 +95,7 @@
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
-                <h4><span>3、手机淘宝-收货地址</span><a>截图示例</a></h4>
+                <h4><span>3、手机淘宝-收货地址</span><a @click="showDialog(3)">截图示例</a></h4>
                 <el-form-item prop="screenshotAddress" labelWidth="0">
                     <el-upload
                             v-loading="uploadLoading3"
@@ -112,28 +112,16 @@
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
                 </el-form-item>
-                <h4><span>4、淘宝截图-我的</span><a>截图示例</a></h4>
-                <el-form-item prop="screenshotMy" labelWidth="0">
-                    <el-upload
-                            v-loading="uploadLoading4"
-                            :on-progress="handelAvatarProgress4"
-                            :before-upload="validateSize"
-                            class="avatar-uploader"
-                            action="/api/attachment/upload"
-                            :show-file-list="false"
-                            :data="{type:'BUY_NUMBER_CHART'}"
-                            name="file"
-                            accept="image/png,image/gif,image/jpg,image/jpeg"
-                            :on-success="function(e){handleAvatarSuccess(e,'screenshotMy', 4)}">
-                        <img v-if="buyerRequire.screenshotMy" :src="buyerRequire.screenshotMy" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-form-item>
                 <el-form-item label-width="0">
                     <el-button type="primary" @click="submitForm('buyerRequire')" :loading="loading" style="width: 100%">提交</el-button>
                 </el-form-item>
             </el-form>
         </div>
+        <el-dialog :visible.sync="dialogVisible">
+            <img v-if="dialogImageUrl===1" width="100%" src="../../assets/images/show1.png" alt="">
+            <img v-if="dialogImageUrl===2" width="100%" src="../../assets/images/show2.png" alt="">
+            <img v-if="dialogImageUrl===3" width="100%" src="../../assets/images/show3.png" alt="">
+        </el-dialog>
     </div>
 </template>
 
@@ -144,10 +132,11 @@
     name: 'buyerRequire',
     data() {
       return {
+        dialogVisible: false,
+        dialogImageUrl: 1,
         uploadLoading1: false,
         uploadLoading2: false,
         uploadLoading3: false,
-        uploadLoading4: false,
         loading: false,
         taskType,
         buyTypes,
@@ -230,6 +219,10 @@
       }
     },
     methods: {
+      showDialog(dialogImageUrl){
+        this.dialogVisible = true;
+        this.dialogImageUrl=dialogImageUrl;
+      },
       submitForm() {
         this.$refs.buyerRequire.validate(async (valid) => {
           if (valid) {
@@ -282,9 +275,6 @@
       },
       handelAvatarProgress3() {
         this.uploadLoading3 = true
-      },
-      handelAvatarProgress4() {
-        this.uploadLoading4 = true
       },
         handleAvatarSuccess(res, type, loadingKey) {
           this['uploadLoading'+loadingKey] = false;
@@ -411,6 +401,9 @@
                 line-height: 200px;
                 text-align: center;
             }
+        }
+        .el-dialog{
+            width: 80%;
         }
     }
 </style>

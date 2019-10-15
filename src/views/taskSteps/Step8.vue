@@ -11,7 +11,7 @@
            <el-form-item prop="value2">
                <el-input placeholder="宝贝订单编号" v-model="ruleForm.value2"></el-input>
            </el-form-item>
-           <p v-if="taskRequire.isPaymentScreenshot">4、付款截图上传（如果任务发布时选取了要求）</p>
+           <p v-if="taskRequire.isPaymentScreenshot">4、付款截图上传</p>
            <el-form-item prop="top" labelWidth="0" v-if="taskRequire.isPaymentScreenshot">
                <el-upload
                        v-loading="uploadLoading"

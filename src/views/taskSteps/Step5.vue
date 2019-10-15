@@ -3,7 +3,7 @@
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
            <h4>{{indexDesc[(steps.indexOf(5)+1)]}}、 浏览副宝贝</h4>
            <p>1、浏览副宝贝数量为：{{taskRequire.isBrowseBaby}}</p>
-           <p v-if="taskRequire.isScreenshot">2、截图上传（如果任务发布时选取了要求）</p>
+           <p v-if="taskRequire.isScreenshot">2、截图上传</p>
            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
                        v-loading="uploadLoading"

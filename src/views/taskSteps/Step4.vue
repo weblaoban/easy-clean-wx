@@ -4,7 +4,7 @@
            {{steps}}
            <h4>{{indexDesc[(steps.indexOf(4)+1)]}}、 浏览评价</h4>
            <p>1、浏览时间不低于2分钟</p>
-           <p v-if="taskRequire.isScreenshot">2、截图上传（如果任务发布时选取了要求）</p>
+           <p v-if="taskRequire.isScreenshot">2、截图上传</p>
            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
                        v-loading="uploadLoading"
