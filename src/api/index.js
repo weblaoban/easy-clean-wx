@@ -7,7 +7,7 @@ import { Message } from 'element-ui'
 //  request
 axios.interceptors.request.use(function (config) {
     config.withCredentials = true
-    config.timeout = 12000
+    config.timeout = 15000
     let token = localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')).token:'';
     if (token) {
         config.headers = {
