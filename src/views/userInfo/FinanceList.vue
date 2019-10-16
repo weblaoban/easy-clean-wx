@@ -12,7 +12,7 @@
                                :value="item.id"></el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item style="width: 100%">
+            <el-form-item style="width: 100%;margin-bottom: 0.1rem">
                 <el-button type="primary"
                            @click="submitForm('finance')" :loading="loading">搜索
                 </el-button>
@@ -192,7 +192,7 @@
             overflow: hidden;
             padding: 0 20px;
             width: 100%;
-            position:absolute; top:280px;left:0; bottom:100px; z-index:0;
+            position:absolute; top:310px;left:0; bottom:100px; z-index:0;
             background: #fff;
             .container {
                 position: relative;

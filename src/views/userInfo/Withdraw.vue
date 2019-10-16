@@ -10,10 +10,6 @@
                 <span class="content">{{account.userName}}</span>
             </div>
             <div class="item">
-                <span class="label">开户行：</span>
-                <span class="content">{{account.openBank}}</span>
-            </div>
-            <div class="item">
                 <span class="label">银行名称：</span>
                 <span class="content">{{account.bankName}}</span>
             </div>
