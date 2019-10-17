@@ -140,6 +140,9 @@
                 </el-button>
             </div>
         </el-dialog>
+        <el-dialog title="dialog.dictionariesName" :visible.sync="dialogTextVisible" @close="dialogFormVisible=true">
+            <p v-text="dialog.dictionariesValue"></p>
+        </el-dialog>
 
         <el-dialog
                    :visible.sync="showVerifyDialog" :before-close="hideVerifyDialog">
@@ -164,6 +167,7 @@
     name: 'extension',
     data() {
       return {
+          dialogTextVisible: false,
         loading: false,
         loadingApply: false,
         loadingGetBuyer: false,
@@ -179,11 +183,13 @@
         taskId: 0,
         tips: '',
           authInfo: {},
-          nextTask: {}
+          nextTask: {},
+          dialog:{},
       }
     },
     async created() {
       this.getList();
+      this.getLabelBox();
       this.getBuyerList();
         const authResult = await this.$API.request(this.$API.userAuth,'POST');
         this.loading = false;
@@ -193,6 +199,16 @@
         }
     },
     methods: {
+        async getLabelBox(){
+            this.loading = true;
+            const result = await this.$API.request(this.$API.labelBox, 'POST');
+            this.loading = false;
+            if (result && result.success) {
+                this.dialog = result.data
+            } else {
+                this.$message.info(result.msg)
+            }
+        },
       async getBuyerList() {
         this.loadingGetBuyer = true;
         const result = await this.$API.request(this.$API.buyNumberList, 'POST', {status: 1});
@@ -246,6 +262,10 @@
       handelApply(id, taskId) {
         this.taskId = taskId;
         this.id = id;
+        if(this.dialog.status===1){
+            this.dialogTextVisible = true;
+            return;
+        }
         this.dialogFormVisible = true;
       },
       async handelApplyTask() {

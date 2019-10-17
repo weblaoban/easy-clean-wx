@@ -36,6 +36,7 @@ const url = {
     getUserByRecommend: 'userRecommend/getUserByRecommend', //追加奖励
     ruleAuth: 'userAuthentication/ruleAuth', //规则认证
     nextTask: 'userTask/nextTask', //下一波任务
+    labelBox: 'userTask/labelBox',//可配置是否显示刷手端申请任务界面弹窗
 }
 for (let key in url) {
     url[key] = host + url[key]

@@ -3,7 +3,11 @@
         <el-form :rules="rules" class="demo-ruleForm">
             <p>1、完成评价以及买家秀</p>
             <p v-if="evaluateRequire.isDesignatedEvaluation">指定评价：<span v-text="evaluateRequire.evaluationContent"></span></p>
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture1" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture2" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture3" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture4" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture5" alt="">
             <p>2、该宝贝的物流截图上传<a @click="showDialog">截图示例</a></p>
             <el-form-item v-if="evaluateRequire" prop="screen" labelWidth="0" v-loading="uploadWuliuLoading">
                 <el-upload
