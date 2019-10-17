@@ -3,7 +3,7 @@
        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm">
            <h4>{{indexDesc[(steps.indexOf(6)+1)]}}、 宝贝加购物车</h4>
            <p>1、预购买的宝贝提前加入购物车</p>
-           <p v-if="taskRequire.isScreenshot">2、截图上传</p>
+           <p v-if="taskRequire.isScreenshot">2、截图上传 <a @click="showDialog">截图示例</a></p>
            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
                <el-upload
                        v-loading="uploadLoading"
@@ -25,6 +25,9 @@
                <el-button type="primary" style="margin-left: 40px;" @click="submitForm('ruleForm')">下一步</el-button>
            </div>
        </el-form>
+       <el-dialog :visible.sync="dialogVisible">
+           <img width="100%" src="../../assets/images/stepShow2.png" alt="">
+       </el-dialog>
    </div>
 </template>
 <script>
@@ -33,6 +36,7 @@
       props: ['taskRequire','steps', 'ruleForm'],
     data(){
       return{
+        dialogVisible: false,
         uploadLoading: false,
           indexDesc:{1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七'},
         rules: {
@@ -45,6 +49,9 @@
       }
     },
     methods: {
+      showDialog(){
+        this.dialogVisible = true;
+      },
       validateSize(file) {
         const isLt2M = file.size / 1024 / 1024 < 5;
         if (!isLt2M) {
@@ -110,6 +117,11 @@
         p, h4{
             line-height: 50px;
             margin-bottom: 10px;
+            a{
+                color: #4685f4;
+                font-size: 28px;
+                float: right;
+            }
         }
         .button{
             text-align: center;
@@ -143,6 +155,9 @@
         height: 200px;
         line-height: 200px;
         text-align: center;
+    }
+    .el-dialog{
+        width: 80%;
     }
 }
 </style>

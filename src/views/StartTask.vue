@@ -49,6 +49,8 @@
                     },
                     isBrowseBaby:{
                         picture1:'',
+                        picture2:'',
+                        picture3:'',
                     },
                     isShoppingCart:{
                         picture1:'',
@@ -97,7 +99,6 @@
                 }
                 this.steps.push(8)
                 this.step = this.steps[0]
-//                this.step = 2
             } else {
                 if (result.msg === 'token is invalid,please login again!') {
                     this.$router.push('/login')

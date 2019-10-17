@@ -4,7 +4,7 @@
            <h4>{{indexDesc[(steps.indexOf(5)+1)]}}、 浏览副宝贝</h4>
            <p>1、浏览副宝贝数量为：{{taskRequire.isBrowseBaby}}</p>
            <p v-if="taskRequire.isScreenshot">2、截图上传</p>
-           <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0">
+           <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0" v-for="item in taskRequire.isBrowseBaby">
                <el-upload
                        v-loading="uploadLoading"
                        :on-progress="handelAvatarProgress"
@@ -15,8 +15,8 @@
                        :data="{type:'ORDERS_CHART'}"
                        name="file"
                        accept="image/png,image/gif,image/jpg,image/jpeg"
-                       :on-success="function(e,file){handleAvatarSuccess(e,file,'picture1')}">
-                   <img v-if="ruleForm.picture1" :src="ruleForm.picture1" class="avatar">
+                       :on-success="function(e,file){handleAvatarSuccess(e,file,'picture'+item)}">
+                   <img v-if="ruleForm['picture'+item]" :src="ruleForm['picture'+item]" class="avatar">
                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                </el-upload>
            </el-form-item>
@@ -75,9 +75,9 @@
         }
         document.body.removeChild(textArea);
       },
-      handleAvatarSuccess(res) {
+      handleAvatarSuccess(res, file,type) {
         this.uploadLoading = false
-            this.ruleForm.picture1 = res.msg;
+        this.ruleForm[type]=res.msg;
       },
       goPrev(){
           this.$emit('submit', this.steps[this.steps.indexOf(5)-1]);

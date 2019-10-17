@@ -29,7 +29,7 @@
                                 <el-button type="primary" @click="giveUp(item)" :loading="givingup">放弃任务</el-button>
                             </div>
                             <div class="button" v-if="item.status===4">
-                                <el-button type="primary"><router-link :to="'/evaluate/'+item.id+'/'+item.taskSubId+'/'+item.taskId">去评价</router-link></el-button>
+                                <el-button type="primary"><router-link :to="'/evaluate/'+item.id+'/'+item.taskSubId+'/'+item.taskId">待物流送达确认收货</router-link></el-button>
                             </div>
                             <div class="button" v-if="item.status===5">
                                 <el-button type="info">已评价</el-button>

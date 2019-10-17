@@ -104,7 +104,7 @@
            if(getRecommendAuth && getRecommendAuth.success){
                this.$message.success('报名成功')
            } else{
-               this.$message.success(getRecommendAuth.msg)
+               this.$message.info(getRecommendAuth.msg)
            }
         },
       copyTextToClipboard(text) {

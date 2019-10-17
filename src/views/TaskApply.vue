@@ -107,7 +107,7 @@
                 </ul>
                 <p v-if="!taskList.length && nextTask.count">
                     平台当前还有（<span v-text="nextTask.count"></span>）个任务未被申请，当前时间段已全部申请完毕，下一波任务来临时间为
-                    <span v-text="nextTask.startDate">2019-12-15 15:50</span>，请各位提前做好准备
+                    <span v-text="nextTask.startDate"></span>，请各位提前做好准备
                 </p>
                 <p v-if="!taskList.length && !nextTask.count">
                     平台当前还有（<span v-text="nextTask.count"></span>）个任务未被申请
@@ -313,7 +313,9 @@
                 }
             }
         }
-
+        .el-scrollbar__wrap{
+            margin-bottom: 0 !important;
+        }
         ul {
             li {
                 padding: 20px 20px 30px;

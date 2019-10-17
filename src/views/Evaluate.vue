@@ -3,8 +3,25 @@
         <el-form :rules="rules" class="demo-ruleForm">
             <p>1、完成评价以及买家秀</p>
             <p v-if="evaluateRequire.isDesignatedEvaluation">指定评价：<span v-text="evaluateRequire.evaluationContent"></span></p>
-            <p v-if="evaluateRequire.isSlideShow">2、评价截图上传（如果任务发布时选取了晒图要求）</p>
             <img style="width: 100%;" :src="evaluateRequire.slideShowPicture" alt="">
+            <p>2、该宝贝的物流截图上传<a @click="showDialog">截图示例</a></p>
+            <el-form-item v-if="evaluateRequire" prop="screen" labelWidth="0" v-loading="uploadWuliuLoading">
+                <el-upload
+
+                        :on-progress="handelWuliuProgress"
+                        :before-upload="validateSize"
+                        class="avatar-uploader"
+                        action="/api/attachment/upload"
+                        :show-file-list="false"
+                        :data="{type:'COMMENT'}"
+                        name="file"
+                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        :on-success="handelWuliuSuccess">
+                    <img v-if="wuliu" :src="wuliu" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+            <p v-if="evaluateRequire.isSlideShow">2、评价截图上传</p>
             <el-form-item v-if="evaluateRequire.isSlideShow" prop="screen" labelWidth="0" v-loading="uploadLoading">
                 <el-upload
 
@@ -25,6 +42,9 @@
                 <el-button type="primary" @click="submitForm" :loading="loading">完成</el-button>
             </div>
         </el-form>
+        <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" src="../assets/images/wuliu.png" alt="">
+        </el-dialog>
     </div>
 </template>
 <script>
@@ -32,10 +52,13 @@
         name: 'startTask',
         data(){
             return{
+              uploadWuliuLoading: false,
+              dialogVisible: false,
               uploadLoading: false,
                 getingRequire: false,
                 loading: false,
                 screen: '',
+                wuliu: '',
                 rules: {},
                 evaluateRequire: {},
             }
@@ -50,17 +73,27 @@
             }
         },
         methods: {
+          showDialog(){
+            this.dialogVisible = true;
+          },
             handleAvatarSuccess(res) {
               this.uploadLoading = false
                 this.screen = res.msg;
             },
+          handelWuliuProgress(){
+            this.uploadWuliuLoading = true;
+          },
+          handelWuliuSuccess(res){
+            this.uploadWuliuLoading = false
+            this.wuliu = res.msg;
+          },
             goPrev(){
                 this.$emit('submit', 6);
             },
           validateSize(file) {
             const isLt2M = file.size / 1024 / 1024 < 5;
             if (!isLt2M) {
-              this.$message.error('上传头像图片大小不能超过 5MB!');
+              this.$message.error('上传图片大小不能超过 5MB!');
             }
             return isLt2M;
           },
@@ -102,6 +135,11 @@
             p, h4{
                 line-height: 50px;
                 margin-bottom: 10px;
+                a{
+                    color: #4685f4;
+                    font-size: 28px;
+                    float: right;
+                }
             }
             .button{
                 text-align: center;
@@ -136,6 +174,9 @@
             height: 200px;
             line-height: 200px;
             text-align: center;
+        }
+        .el-dialog{
+            width: 80%;
         }
     }
 </style>

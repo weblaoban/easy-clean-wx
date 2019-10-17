@@ -11,7 +11,7 @@
                 <el-input :placeholder="'商品店铺'+item" v-model="ruleForm.isThreeShops['value'+item]"></el-input>
             </el-form-item>
             <p v-if="taskRequire.isScreenshot">5、截图上传</p>
-            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0" v-for="item in 3">
+            <el-form-item v-if="taskRequire.isScreenshot" prop="top" labelWidth="0" v-for="item in taskRequire.isThreeShops">
                 <el-upload
                         v-loading="uploadLoading"
                         :on-progress="handelAvatarProgress"

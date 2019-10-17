@@ -11,7 +11,7 @@
            <el-form-item prop="value2">
                <el-input placeholder="宝贝订单编号" v-model="ruleForm.value2"></el-input>
            </el-form-item>
-           <p v-if="taskRequire.isPaymentScreenshot">4、付款截图上传</p>
+           <p v-if="taskRequire.isPaymentScreenshot">4、付款截图上传 <a @click="showDialog">截图示例</a></p>
            <el-form-item prop="top" labelWidth="0" v-if="taskRequire.isPaymentScreenshot">
                <el-upload
                        v-loading="uploadLoading"
@@ -32,6 +32,9 @@
                <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">提交</el-button>
            </div>
        </el-form>
+       <el-dialog :visible.sync="dialogVisible">
+           <img width="100%" src="../../assets/images/stepShow4.png" alt="">
+       </el-dialog>
    </div>
 </template>
 <script>
@@ -40,6 +43,7 @@
       props: ['taskRequire','steps', 'ruleForm', 'loading'],
     data(){
       return{
+        dialogVisible: false,
         uploadLoading: false,
           indexDesc:{1:'一',2:'二',3:'三',4:'四',5:'五',6:'六',7:'七'},
           rules: {
@@ -57,6 +61,9 @@
       }
     },
     methods: {
+      showDialog(){
+        this.dialogVisible = true;
+      },
       validateSize(file) {
         const isLt2M = file.size / 1024 / 1024 < 5;
         if (!isLt2M) {
@@ -117,6 +124,11 @@
         p, h4{
             line-height: 50px;
             margin-bottom: 10px;
+            a{
+                color: #4685f4;
+                font-size: 28px;
+                float: right;
+            }
         }
         .button{
             text-align: center;
@@ -150,6 +162,9 @@
         height: 200px;
         line-height: 200px;
         text-align: center;
+    }
+    .el-dialog{
+        width: 80%;
     }
 }
 </style>
