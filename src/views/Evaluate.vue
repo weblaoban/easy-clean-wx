@@ -25,7 +25,7 @@
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
-            <p v-if="evaluateRequire.isSlideShow">2、评价截图上传</p>
+            <p v-if="evaluateRequire.isSlideShow">3、评价截图上传</p>
             <el-form-item v-if="evaluateRequire.isSlideShow" prop="screen" labelWidth="0" v-loading="uploadLoading">
                 <el-upload
 
@@ -105,7 +105,7 @@
             this.uploadLoading = true
           },
             async submitForm() {
-                if(this.evaluateRequire.isSlideShow && !this.screen){
+                if(this.evaluateRequire.isSlideShow && !this.screen && !this.wuliu){
                     this.$message.info('请上传截图');
                     return;
                 }
