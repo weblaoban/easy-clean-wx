@@ -32,7 +32,7 @@
                     <div class="section">
                         <div class="title">
                             <p>推荐商家</p>
-                            <div class="button" @click="copyTextToClipboard(linkList+'/#/register?id='+userInfo.id)">点击复制商家注册链接</div>
+                            <div class="button" @click="copyTextToClipboard(merchantLinkList+'/#/register?id='+userInfo.id)">点击复制商家注册链接</div>
                         </div>
                         <p>发送注册链接至商家，请用PC端打开，商家每放一单你都能得到1元提成</p>
                     </div>
@@ -64,15 +64,20 @@
           getListLoading: false,
         inviteList: [],
           linkList:'',
+          merchantLinkList:'',
           userInfo: localStorage.getItem('userInfo')?JSON.parse(localStorage.getItem('userInfo')):{}
       }
     },
       async created(){
         this.getAuth();
           this.getList();
-          const linkResult = await this.$API.request(this.$API.invitationLink,'GET');
+          const linkResult = await this.$API.request(this.$API.invitationLink+'?type=user','GET');
           if(linkResult && linkResult.success){
               this.linkList = linkResult.msg;
+          }
+          const userLinkResult = await this.$API.request(this.$API.invitationLink+'?type=merchant','GET');
+          if(userLinkResult && userLinkResult.success){
+              this.merchantLinkList = userLinkResult.msg;
           }
 
       },

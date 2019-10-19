@@ -205,8 +205,6 @@
             this.loading = false;
             if (result && result.success) {
                 this.dialog = result.data
-            } else {
-                this.$message.info(result.msg)
             }
         },
       async getBuyerList() {
