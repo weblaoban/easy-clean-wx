@@ -3,13 +3,13 @@
         <el-form :rules="rules" class="demo-ruleForm">
             <p>1、完成评价以及买家秀</p>
             <p v-if="evaluateRequire.isDesignatedEvaluation">指定评价：<span v-text="evaluateRequire.evaluationContent"></span></p>
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture1" alt="">
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture2" alt="">
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture3" alt="">
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture4" alt="">
-            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture5" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture1" v-if="evaluateRequire.slideShowPicture1" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture2" v-if="evaluateRequire.slideShowPicture2" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture3" v-if="evaluateRequire.slideShowPicture3" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture4" v-if="evaluateRequire.slideShowPicture4" alt="">
+            <img style="width: 100%;" :src="evaluateRequire.slideShowPicture5" v-if="evaluateRequire.slideShowPicture5" alt="">
             <p>2、该宝贝的物流截图上传<a @click="showDialog">截图示例</a></p>
-            <el-form-item v-if="evaluateRequire" prop="screen" labelWidth="0" v-loading="uploadWuliuLoading">
+            <el-form-item v-if="evaluateRequire" prop="logisticsScreen" labelWidth="0" v-loading="uploadWuliuLoading">
                 <el-upload
 
                         :on-progress="handelWuliuProgress"
@@ -21,7 +21,7 @@
                         name="file"
                         accept="image/png,image/gif,image/jpg,image/jpeg"
                         :on-success="handelWuliuSuccess">
-                    <img v-if="wuliu" :src="wuliu" class="avatar">
+                    <img v-if="logisticsScreen" :src="logisticsScreen" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                 </el-upload>
             </el-form-item>
@@ -62,7 +62,7 @@
                 getingRequire: false,
                 loading: false,
                 screen: '',
-                wuliu: '',
+                logisticsScreen: '',
                 rules: {},
                 evaluateRequire: {},
             }
@@ -89,7 +89,7 @@
           },
           handelWuliuSuccess(res){
             this.uploadWuliuLoading = false
-            this.wuliu = res.msg;
+            this.logisticsScreen = res.msg;
           },
             goPrev(){
                 this.$emit('submit', 6);
@@ -105,14 +105,14 @@
             this.uploadLoading = true
           },
             async submitForm() {
-                if(this.evaluateRequire.isSlideShow && !this.screen && !this.wuliu){
+                if(this.evaluateRequire.isSlideShow && !this.screen && !this.logisticsScreen){
                     this.$message.info('请上传截图');
                     return;
                 }
                 const taskSubId = this.$route.params.taskSubId;
                 const orderId = this.$route.params.orderId;
                 this.loading = true;
-                const result = await this.$API.request(this.$API.comment, 'POST',{orderId, taskSubId,screen: this.screen});
+                const result = await this.$API.request(this.$API.comment, 'POST',{orderId, taskSubId,screen: this.screen, logisticsScreen: this.logisticsScreen});
                 this.loading = false;
                 if(result && result.success){
                     const that = this;
