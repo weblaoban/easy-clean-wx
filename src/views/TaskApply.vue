@@ -98,7 +98,7 @@
                         <div class="bottom">
                             <div class="button">
                                 <el-button type="primary"
-                                           @click="handelApply(item.id, item.taskId)">
+                                           @click="handelApply(item.id, item.taskId)" :loading="labelLoading">
                                     申请
                                 </el-button>
                             </div>
@@ -169,6 +169,7 @@
       return {
           dialogTextVisible: false,
         loading: false,
+          labelLoading: false,
         loadingApply: false,
         loadingGetBuyer: false,
           loadingCheckBuyer: false,
@@ -189,7 +190,6 @@
     },
     async created() {
       this.getList();
-      this.getLabelBox();
       this.getBuyerList();
         const authResult = await this.$API.request(this.$API.userAuth,'POST');
         this.loading = false;
@@ -257,13 +257,19 @@
           this.buyerAccount = value
         }
       },
-      handelApply(id, taskId) {
+      async handelApply(id, taskId) {
         this.taskId = taskId;
         this.id = id;
-        if(this.dialog.status===1){
-            this.dialogTextVisible = true;
-            return;
-        }
+          this.labelLoading = true;
+          const result = await this.$API.request(this.$API.labelBox, 'POST');
+          this.labelLoading = false;
+          if (result && result.success) {
+              this.dialog = result.data
+              if(result.data && result.data.status===1){
+                  this.dialogTextVisible = true;
+                  return;
+              }
+          }
         this.dialogFormVisible = true;
       },
       async handelApplyTask() {
