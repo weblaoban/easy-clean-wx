@@ -220,6 +220,7 @@
     .register{
         width: 100%;
         margin: 60px auto 0;
+        padding-bottom: 1rem;
         .title{
             width: 100%;
             height: 42px;

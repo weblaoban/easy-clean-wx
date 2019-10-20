@@ -147,6 +147,7 @@
         margin-bottom: 20px;
     }
     .forgetPassword{
+        padding-bottom: 1rem;
         margin-top: 150px;
         .el-form{
             padding: 20px;

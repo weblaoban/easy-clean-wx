@@ -104,6 +104,7 @@
         width: 100%;
         padding: 20px;
         margin: 120px auto 0;
+        padding-bottom: 1rem;
         h4{
             font-size: 30px;
             color: #666;

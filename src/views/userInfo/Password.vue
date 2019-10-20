@@ -151,6 +151,7 @@
 </script>
 <style lang="scss">
     .forgetPassword {
+        padding-bottom: 1rem;
         font-size: 24px;
 
         .el-tabs__nav {

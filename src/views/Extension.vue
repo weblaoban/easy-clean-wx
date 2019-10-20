@@ -138,6 +138,7 @@
 <style lang="scss">
     .extension {
         font-size: 24px;
+        padding-bottom: 1rem;
 
         .el-tabs__nav {
             width: 100%;

@@ -75,6 +75,7 @@
         border-radius: 0;
         margin-top: 20px;
         padding: 40px;
+        padding-bottom: 1rem;
         .item{
             width: 100%;
             text-align: left;

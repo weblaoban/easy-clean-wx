@@ -173,6 +173,7 @@
         width: 100%;
         padding: 20px;
         margin: 40px auto 0;
+        padding-bottom: 1rem;
 
         a {
             display: block;

@@ -63,6 +63,7 @@
         border-radius: 0;
         margin-top: 20px;
         padding: 20px;
+        padding-bottom: 1rem;
         p {
             text-align: left;
             &.tip {

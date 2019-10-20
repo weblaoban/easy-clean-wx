@@ -106,6 +106,7 @@
 </script>
 <style lang="scss" scoped>
     .userInfo{
+        padding-bottom: 1rem;
         .container{
             padding: 0 30px;
         }
