@@ -253,11 +253,13 @@
         this.cities = []
         const cities = provinces.find(function(item){return item.code===province})?provinces.find(function(item){return item.code===province}).cityList : [];
         this.buyerRequire.city='';
+          this.buyerRequire.area='';
         this.cities = cities;
       },
       cityChange(city){
         this.areas=[];
         const areas = this.cities.find(function(item){return item.code===city})?this.cities.find(function(item){return item.code===city}).areaList : []
+          this.buyerRequire.area='';
         this.areas = areas;
       },
       validateSize(file) {
