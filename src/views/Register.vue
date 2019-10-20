@@ -183,6 +183,7 @@
         async provinceChange(province) {
           const cities = await this.$API.request(this.$API.getCities+'?parentCode='+province,'GET',{parentCode: province});
           if(cities && cities.success){
+              this.ruleForm.city='';
             this.cities = cities.data
           }
         },

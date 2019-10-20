@@ -252,7 +252,8 @@
       },
       provinceChange(province){
         this.cities = []
-        const cities = provinces.find(function(item){return item.code===province})?provinces.find(function(item){return item.code===province}).cityList : []
+        const cities = provinces.find(function(item){return item.code===province})?provinces.find(function(item){return item.code===province}).cityList : [];
+        this.buyerRequire.city='';
         this.cities = cities;
       },
       cityChange(city){
