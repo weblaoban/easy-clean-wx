@@ -110,7 +110,7 @@
                     <span v-text="nextTask.startDate"></span>，请各位提前做好准备
                 </p>
                 <p v-if="!taskList.length && !nextTask.count">
-                    平台当前还有（<span v-text="nextTask.count"></span>）个任务未被申请
+                    平台任务已全部申请完成
                 </p>
             </el-tab-pane>
         </el-tabs>
