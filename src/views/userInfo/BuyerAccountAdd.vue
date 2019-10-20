@@ -162,7 +162,6 @@
           screenshotTop: '',
           screenshotBottom: '',
           screenshotAddress: '',
-          screenshotMy: '',
         },
         rules: {
           type: [
@@ -226,8 +225,8 @@
       submitForm() {
         this.$refs.buyerRequire.validate(async (valid) => {
           if (valid) {
-            const {screenshotTop, screenshotBottom, screenshotAddress, screenshotMy} = this.buyerRequire;
-            if(!screenshotTop || !screenshotBottom || !screenshotAddress || !screenshotMy){
+            const {screenshotTop, screenshotBottom, screenshotAddress} = this.buyerRequire;
+            if(!screenshotTop || !screenshotBottom || !screenshotAddress){
               this.$message.info('请上传淘宝截图');
               return;
             }

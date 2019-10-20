@@ -202,6 +202,7 @@
         }
         .list{
             margin-top: 20px;
+            padding-bottom: 1rem;
             li{
                 width: 100%;
                 border-bottom: 1px solid #eee;
