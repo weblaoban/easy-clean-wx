@@ -22,8 +22,9 @@ module.exports={
     port: '8089',
     proxy: {
       "/api":{
+        target: "http://user.qingsongtao.vip/",
         // target: "http://2689087bm6.qicp.vip:35338/",
-        target: "http://user.qst-test.cn/",
+        // target: "http://user.qst-test.cn/",
         changeOrigin: true
       }
     }

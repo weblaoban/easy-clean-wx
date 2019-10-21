@@ -140,7 +140,7 @@
                 </el-button>
             </div>
         </el-dialog>
-        <el-dialog v-title="dialog.dictionariesName" :visible.sync="dialogTextVisible" @close="dialogFormVisible=true">
+        <el-dialog :title="dialog.dictionariesName" :visible.sync="dialogTextVisible" @close="dialogFormVisible=true">
             <p v-text="dialog.dictionariesValue"></p>
         </el-dialog>
 
