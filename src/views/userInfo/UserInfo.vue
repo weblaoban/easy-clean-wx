@@ -52,12 +52,12 @@
             </ul>
         </div>
         <ul class="list">
-            <li><router-link to="/userInfo/buyerAccount">买号管理</router-link></li>
+            <li><router-link to="/userInfo/buyerAccount">买号管理 <span v-if="!buyerList.length" style="color: red">（必须绑定）</span></router-link></li>
             <li><router-link to="/userInfo/withdraw">资金提现</router-link></li>
             <li><router-link to="/userInfo/financeList">资金流水</router-link></li>
             <li><router-link to="/userInfo/info">我的资料</router-link></li>
             <li><router-link to="/userInfo/password">密码管理</router-link></li>
-            <li><a href="">联系客服</a></li>
+            <li>联系客服&nbsp;&nbsp;（QQ：1612358921）</li>
         </ul>
     </div>
 </template>
@@ -69,10 +69,12 @@
             logoutLoading: false,
           loading: false,
           info: {userAccount: {}},
-          authInfo: {}
+          authInfo: {},
+            buyerList: [],
         }
       },
       async created(){
+          this.getBuyerList();
         this.loading = true;
         const result = await this.$API.request(this.$API.getUserInfo,'POST');
         const authResult = await this.$API.request(this.$API.userAuth,'POST');
@@ -91,6 +93,16 @@
         }
       },
       methods:{
+          async getBuyerList() {
+              const result = await this.$API.request(this.$API.buyNumberList, 'POST', {status: 1});
+              if (result && result.success) {
+                  this.buyerList = result.data.filter(function (item) {
+                      return item.status === 1
+                  });
+              } else {
+                  this.$message.info(result.msg)
+              }
+          },
         async logOut(){
             this.logoutLoading = true;
             const result = await this.$API.request(this.$API.logout,'POST');

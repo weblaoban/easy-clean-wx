@@ -140,16 +140,26 @@
                 </el-button>
             </div>
         </el-dialog>
-        <el-dialog :title="dialog.dictionariesName" :visible.sync="dialogTextVisible" @close="dialogFormVisible=true">
+        <el-dialog :title="dialog.dictionariesName" :visible.sync="dialogTextVisible">
             <p v-text="dialog.dictionariesValue"></p>
         </el-dialog>
 
         <el-dialog
-                   :visible.sync="showVerifyDialog" :before-close="hideVerifyDialog">
+                :visible.sync="showVerifyDialog">
             <p>请先在个人中心完成实名认证、手机认证、银行卡认证、平台规则考试，完成后才可申请任务</p>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary"
-                           @click="hideVerifyDialog">确认
+                           @click="hideVerifyDialog">前往
+                </el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog
+                :visible.sync="showBuyerDialog">
+            <p>请先在个人中心绑定买号，完成后才可申请任务</p>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary"
+                           @click="hideVerifyDialog">前往
                 </el-button>
             </div>
         </el-dialog>
@@ -177,6 +187,7 @@
         currentSection: '1',
         dialogFormVisible: false,
           showVerifyDialog: false,
+          showBuyerDialog: false,
         buyerAccount: '',
         taskList: [],
         buyerList: [],
@@ -191,6 +202,7 @@
     async created() {
       this.getList();
       this.getBuyerList();
+      this.getLabelBox();
         const authResult = await this.$API.request(this.$API.userAuth,'POST');
         this.loading = false;
         if(authResult && authResult.success){
@@ -200,11 +212,15 @@
     },
     methods: {
         async getLabelBox(){
-            this.loading = true;
+            this.labelLoading = true;
             const result = await this.$API.request(this.$API.labelBox, 'POST');
-            this.loading = false;
+            this.labelLoading = false;
             if (result && result.success) {
                 this.dialog = result.data
+                if(result.data && result.data.status===1){
+                    this.dialogTextVisible = true;
+                    return;
+                }
             }
         },
       async getBuyerList() {
@@ -260,24 +276,17 @@
       async handelApply(id, taskId) {
         this.taskId = taskId;
         this.id = id;
-          this.labelLoading = true;
-          const result = await this.$API.request(this.$API.labelBox, 'POST');
-          this.labelLoading = false;
-          if (result && result.success) {
-              this.dialog = result.data
-              if(result.data && result.data.status===1){
-                  this.dialogTextVisible = true;
-                  return;
-              }
-          }
-        this.dialogFormVisible = true;
-      },
-      async handelApplyTask() {
           const authInfo = this.authInfo;
           if(authInfo.identityAuth!==1||authInfo.phoneAuth!==1||authInfo.bankAuth!==1||authInfo.ruleAuth!==1){
               this.showVerifyDialog = true;
               return;
           }
+          if(!this.buyerList.length){
+
+          }
+        this.dialogFormVisible = true;
+      },
+      async handelApplyTask() {
         if(!this.buyerAccount){
           return;
         }
@@ -312,7 +321,6 @@
           this.tips = '';
       },
         hideVerifyDialog(){
-            this.showVerifyDialog = false;
             this.$router.push('/userInfo')
   },
     }
@@ -437,6 +445,9 @@
 
             .tips {
                 color: red;
+            }
+            .dialog-footer{
+                text-align: center;
             }
         }
 

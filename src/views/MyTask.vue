@@ -39,6 +39,10 @@
                 </ul>
             </el-tab-pane>
         </el-tabs>
+        <div class="refresh" @click="getList">
+            <span>刷新</span>
+            <i class="el-icon-refresh-right"></i>
+        </div>
     </div>
 </template>
 
@@ -51,7 +55,7 @@
                 taskType,
                 status: {
                 '-1':'放弃',
-                0:'待申请',1:'已申请',2:'已审核',3:'已下单',4:'已确认',5:'已评价',6:'已返佣金（完成）',7:'投诉',
+                0:'待申请',1:'待审核',2:'已审核',3:'已下单',4:'已确认',5:'已评价',6:'已返佣金（完成）',7:'投诉',
                 },
                 loading: false,
                 givingup: false,
@@ -199,6 +203,23 @@
                     }
                     }
                 }
+            }
+        }
+        .refresh {
+            position: fixed;
+            right: 20px;
+            bottom: 200px;
+            padding: 10px 20px;
+            border-radius: 50%;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+            background: #fff;
+
+            span {
+                display: block;
+            }
+
+            i {
+                font-size: 40px;
             }
         }
     }
