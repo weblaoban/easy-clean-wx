@@ -9,7 +9,7 @@
                 <el-input placeholder="请输入接收到的验证码" v-model="ruleForm.code"></el-input>
                 <el-button @click.prevent="sendCode" class="code">{{codeDesc}}</el-button>
             </el-form-item>
-            <el-form-item prop="password" label="新支付密码：">
+            <el-form-item prop="passWord" label="新支付密码：">
                 <el-input placeholder=" 请输入新支付密码" v-model="ruleForm.password" type="password"></el-input>
             </el-form-item>
             <el-form-item prop="checkPass" label="确认密码：">

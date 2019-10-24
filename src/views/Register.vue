@@ -4,7 +4,7 @@
             <el-form-item prop="userName">
                 <el-input placeholder="请输入用户名" v-model="ruleForm.userName"></el-input>
             </el-form-item>
-            <el-form-item prop="password">
+            <el-form-item prop="passWord">
                 <el-input placeholder="请输入登录密码" v-model="ruleForm.passWord" type="password"></el-input>
             </el-form-item>
             <el-form-item prop="payPassword">

@@ -146,7 +146,7 @@
 
         <el-dialog
                 :visible.sync="showVerifyDialog">
-            <p>请先在个人中心完成实名认证、手机认证、银行卡认证、平台规则考试，完成后才可申请任务</p>
+            <p>请先在个人中心完成手机认证、银行卡认证、平台规则考试，完成后才可申请任务</p>
             <div slot="footer" class="dialog-footer">
                 <el-button type="primary"
                            @click="hideVerifyDialog">前往
@@ -277,7 +277,7 @@
         this.taskId = taskId;
         this.id = id;
           const authInfo = this.authInfo;
-          if(authInfo.identityAuth!==1||authInfo.phoneAuth!==1||authInfo.bankAuth!==1||authInfo.ruleAuth!==1){
+          if(authInfo.phoneAuth!==1||authInfo.bankAuth!==1||authInfo.ruleAuth!==1){
               this.showVerifyDialog = true;
               return;
           }

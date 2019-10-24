@@ -22,13 +22,13 @@
         <div style="height: 50px;line-height: 50px;text-align: center;border-bottom: solid 2px #ddd;background: #fff;">我的认证</div>
         <div class="authentication container">
             <ul v-loading="loading">
-                <li>
-                    <router-link to="/userInfo/realName" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2 || authInfo.identityAuth === 3">实名认证</router-link>
-                    <a v-if="authInfo.identityAuth === 1">实名认证</a>
-                    <em class="suess" v-if="authInfo.identityAuth === 1"></em>
-                    <em class="fail" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2"></em>
-                    <em class="checking" v-if="authInfo.identityAuth === 3"></em>
-                </li>
+<!--                <li>-->
+<!--                    <router-link to="/userInfo/realName" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2 || authInfo.identityAuth === 3">实名认证</router-link>-->
+<!--                    <a v-if="authInfo.identityAuth === 1">实名认证</a>-->
+<!--                    <em class="suess" v-if="authInfo.identityAuth === 1"></em>-->
+<!--                    <em class="fail" v-if="authInfo.identityAuth === 0 || authInfo.identityAuth === 2"></em>-->
+<!--                    <em class="checking" v-if="authInfo.identityAuth === 3"></em>-->
+<!--                </li>-->
                 <li>
                     <router-link to="/userInfo/phoneAuth" v-if="authInfo.phoneAuth === 0 || authInfo.phoneAuth === 2">手机认证</router-link>
                     <a v-if="authInfo.phoneAuth === 1">手机认证</a>
@@ -36,8 +36,8 @@
                     <em class="fail" v-if="authInfo.phoneAuth === 0 || authInfo.phoneAuth === 2"></em>
                 </li>
                 <li>
-                    <router-link to="/userInfo/cardAuth" v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3) &&(authInfo.identityAuth === 1)">银行卡认证</router-link>
-                    <a v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3) &&(authInfo.identityAuth !== 1)" @click="()=>{this.$message.info('请先完成实名认证')}">银行卡认证</a>
+                    <router-link to="/userInfo/cardAuth" v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3)">银行卡认证</router-link>
+<!--                    <a v-if="(authInfo.bankAuth === 0 || authInfo.bankAuth === 2|| authInfo.bankAuth === 3) &&(authInfo.identityAuth !== 1)" @click="()=>{this.$message.info('请先完成实名认证')}">银行卡认证</a>-->
                     <a v-if="authInfo.bankAuth === 1">银行卡认证</a>
                     <em class="suess" v-if="authInfo.bankAuth === 1"></em>
                     <em class="fail" v-if="authInfo.bankAuth === 0 || authInfo.bankAuth === 2"></em>
