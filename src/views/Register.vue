@@ -143,6 +143,13 @@
                 trigger: 'blur'
               }
             ],
+            city: [
+              {
+                required: true,
+                message: '请选择省',
+                trigger: 'blur'
+              }
+            ],
             email: [
               {
                 required: true,
