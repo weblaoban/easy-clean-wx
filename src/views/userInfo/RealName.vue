@@ -20,7 +20,7 @@
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
                         :on-progress="handelAvatarProgress"
-                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        accept="image/*"
                         :data="{type:'REAL_NAME_CHART'}"
                         name="file"
                         :before-upload="validateSize"
@@ -41,7 +41,7 @@
                         :show-file-list="false"
                         :data="{type:'REAL_NAME_CHART'}"
                         name="file"
-                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        accept="image/*"
                         :on-progress="handelOtherProgress"
                         :before-upload="validateSize"
                         :on-success="handleOtherSuccess">

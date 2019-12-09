@@ -22,7 +22,7 @@
                        :show-file-list="false"
                        :data="{type:'ORDERS_CHART'}"
                        name="file"
-                       accept="image/png,image/gif,image/jpg,image/jpeg"
+                       accept="image/*"
                        :on-success="function(e,file){handleAvatarSuccess(e,file,'picture1')}">
                    <img v-if="ruleForm.picture1" :src="ruleForm.picture1" class="avatar">
                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>

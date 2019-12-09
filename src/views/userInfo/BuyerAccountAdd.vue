@@ -71,12 +71,13 @@
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
-                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            accept="image/*"
                             :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotTop', 1)}">
                         <img v-if="buyerRequire.screenshotTop" :src="buyerRequire.screenshotTop" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
                     </el-upload>
+                    <!--                            accept="image/png,image/gif,image/jpg,image/jpeg"-->
                 </el-form-item>
                 <h4><span>2、手机淘宝-我的淘宝-底部</span><a @click="showDialog(2)">截图示例</a></h4>
                 <el-form-item prop="screenshotBottom" labelWidth="0">
@@ -88,7 +89,7 @@
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
-                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            accept="image/*"
                             :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotBottom', 2)}">
                         <img v-if="buyerRequire.screenshotBottom" :src="buyerRequire.screenshotBottom" class="avatar">
@@ -105,7 +106,7 @@
                             :show-file-list="false"
                             :data="{type:'BUY_NUMBER_CHART'}"
                             name="file"
-                            accept="image/png,image/gif,image/jpg,image/jpeg"
+                            accept="image/*"
                             :before-upload="validateSize"
                             :on-success="function(e){handleAvatarSuccess(e,'screenshotAddress', 3)}">
                         <img v-if="buyerRequire.screenshotAddress" :src="buyerRequire.screenshotAddress" class="avatar">

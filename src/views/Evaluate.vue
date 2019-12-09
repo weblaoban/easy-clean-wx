@@ -11,7 +11,6 @@
             <p>2、该宝贝的物流截图上传<a @click="showDialog">截图示例</a></p>
             <el-form-item v-if="evaluateRequire" prop="logisticsScreen" labelWidth="0" v-loading="uploadWuliuLoading">
                 <el-upload
-
                         :on-progress="handelWuliuProgress"
                         :before-upload="validateSize"
                         class="avatar-uploader"
@@ -19,7 +18,7 @@
                         :show-file-list="false"
                         :data="{type:'COMMENT'}"
                         name="file"
-                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        accept="image/*"
                         :on-success="handelWuliuSuccess">
                     <img v-if="logisticsScreen" :src="logisticsScreen" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -36,7 +35,7 @@
                         :show-file-list="false"
                         :data="{type:'COMMENT'}"
                         name="file"
-                        accept="image/png,image/gif,image/jpg,image/jpeg"
+                        accept="image/*"
                         :on-success="handleAvatarSuccess">
                     <img v-if="screen" :src="creen" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
