@@ -32,17 +32,17 @@
                         </div>
                         <div class="tags">
                             <el-popover
-                                    v-if="item.searchTerms"
+                                    v-if="!!item.searchTerms"
                                     placement="bottom"
                                     width="200"
                                     trigger="click"
                                     :content="item.searchTerms">
                                 <el-tag type="success"
-                                        slot="reference">搜索词
+                                        slot="reference">{{item.searchTerms}}
                                 </el-tag>
                             </el-popover>
                             <el-popover
-                                    v-if="item.isScreenshot"
+                                    v-if="!!item.isScreenshot"
                                     placement="bottom"
                                     width="200"
                                     trigger="hover"
@@ -52,18 +52,18 @@
                                 </el-tag>
                             </el-popover>
                             <el-popover
-                                    v-if="item.isThreeShops"
+                                    v-if="!!item.isThreeShops"
                                     placement="bottom"
                                     width="200"
                                     trigger="hover"
-                                    content="货比三家">
+                                    :content="item.isThreeShops===1?'货比一家':item.isThreeShops===2?'货比两家':'货比三家'">
                                 <el-tag type="success"
                                         slot="reference">
-                                    {{item.isThreeShops===1?'货比一家':item.isThreeShops==='2'?'货比两家':'货比三家'}}
+                                    {{item.isThreeShops===1?'货比一家':item.isThreeShops===2?'货比两家':'货比三家'}}
                                 </el-tag>
                             </el-popover>
                             <el-popover
-                                    v-if="item.isBrowseBaby"
+                                    v-if="!!item.isBrowseBaby"
                                     placement="bottom"
                                     width="200"
                                     trigger="click"
@@ -74,7 +74,7 @@
                                 </el-tag>
                             </el-popover>
                             <el-popover
-                                    v-if="item.isDesignatedEvaluation"
+                                    v-if="!!item.isDesignatedEvaluation"
                                     placement="bottom"
                                     width="200"
                                     trigger="hover"
@@ -85,7 +85,7 @@
                                 </el-tag>
                             </el-popover>
                             <el-popover
-                                    v-if="item.isSlideShow"
+                                    v-if="!!item.isSlideShow"
                                     placement="bottom"
                                     width="200"
                                     trigger="hover"
