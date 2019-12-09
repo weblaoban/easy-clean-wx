@@ -49,7 +49,7 @@
                                 <el-option v-for="city in cities" :key="city.code" :label="city.name" :value="city.code"></el-option>
                             </el-select>
                         </el-form-item>
-                        <el-form-item v-if="areas.length" labelWidth="0" prop="city" style="margin-top: 10px;">
+                        <el-form-item v-if="areas.length" labelWidth="0" prop="area" style="margin-top: 10px;">
                             <el-select  v-model="buyerRequire.area" placeholder="请输入（区）">
                                 <el-option v-for="area in areas" :key="area.code" :label="area.name" :value="area.code"></el-option>
                             </el-select>
@@ -210,6 +210,11 @@
                     required: true, message:'不能为空',trigger:'blur'
                 }
             ],
+          area: [
+            {
+              required: true, message:'不能为空',trigger:'blur'
+            }
+          ],
             address: [
                 {
                     required: true, message:'不能为空',trigger:'blur'
